@@ -1,0 +1,27 @@
+[
+    {
+        "id": 1,
+        "image": "/public/images/category-1.png",
+        "name": "WOMEN COLLECTION",
+         "heading2": "HOT LIST",
+         "btn": "SHOP NOW"
+         
+    },
+        {
+        "id": 2,
+        "image": "/public/images/category-2.png",
+        "name": "MEN COLLECTION",
+         "heading2": "HOT LIST",
+           "btn": "SHOP NOW"
+         
+    },
+        {
+        "id": 3,
+        "image": "/public/images/category-3.png",
+        "name": "KIDS COLLECTION",
+         "heading2": "HOT LIST",
+           "btn": "SHOP NOW"
+         
+    }
+
+]

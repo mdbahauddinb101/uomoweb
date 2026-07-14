@@ -3,7 +3,7 @@ import Image from "../common/Image";
 import navbardata from "../../api/navbardata.json";
 
 const Header = () => {
-  console.log(navbardata);
+
   return (
     <header className="pt-7.25 pb-7">
       <nav>

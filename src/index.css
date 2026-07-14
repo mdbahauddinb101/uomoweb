@@ -11,3 +11,36 @@
 }
 
 
+
+.swiper-pagination-bullet{
+  background: #DDC2B9 !important;
+  opacity: 1 !important;
+  margin-left: 28px !important;
+
+}
+
+.swiper-pagination-bullet-active{
+  background: #222222 !important;
+  position: relative;
+}
+
+.swiper-pagination-bullet-active:after{
+  content: "";
+  width: 30px;
+  height: 30px;
+  border: 2px solid #222222;
+  border-radius: 50%;
+  position: absolute;
+  top:50%;
+  left:50%;
+  transform: translate(-50%, -50%);
+
+}
+
+.swiper-pagination{
+    text-align: start !important;
+    left: 200px !important;
+    bottom: 58px !important;
+    
+}
+

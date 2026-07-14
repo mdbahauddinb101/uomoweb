@@ -1,0 +1,19 @@
+
+[
+  {
+    "id": 1,
+    "image": "/public/images/banner.png",
+    "url": "/"
+  },
+  {
+    "id": 2,
+    "image": "/public/images/banner.png",
+    "url": "/"
+  },
+  {
+    "id": 3,
+    "image": "/public/images/banner.png",
+    "url": "/"
+  }
+
+]
