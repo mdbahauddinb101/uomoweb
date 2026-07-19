@@ -5,7 +5,7 @@ const Category = () => {
   return (
     <section className="mt-25.25">
       <div className="container">
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-4 gap-7.5">
           {categorydata.map((item) => {
             // 1. Split the dynamic name by spaces
             const nameParts = item.name ? item.name.split(" ") : [];

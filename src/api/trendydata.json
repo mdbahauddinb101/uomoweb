@@ -1,0 +1,19 @@
+[
+    {
+       "id": 1,
+       "name": "ALL"
+    },
+    {
+       "id": 2,
+       "name": "NEW ARRIVALS"
+    },
+    {
+       "id": 3,
+       "name": "BEST SELLER"
+    },
+    {
+       "id": 4,
+       "name": "TOP RATING"
+    }
+]
+
