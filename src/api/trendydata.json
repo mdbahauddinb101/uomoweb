@@ -1,19 +1,23 @@
 [
     {
        "id": 1,
-       "name": "ALL"
+       "name": "ALL",
+       "category": "ALL"
     },
     {
        "id": 2,
-       "name": "NEW ARRIVALS"
+       "name": "BEAUTY",
+       "category": "beauty"
     },
     {
        "id": 3,
-       "name": "BEST SELLER"
+       "name": "FRAGRANCES",
+       "category": "fragrances"
     },
     {
        "id": 4,
-       "name": "TOP RATING"
+       "name": "FURNITURE",
+       "category": "furniture"
     }
 ]
 

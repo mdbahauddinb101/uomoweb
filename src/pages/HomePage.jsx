@@ -1,5 +1,7 @@
 import Banner from "../components/Home/Banner";
 import Category from "../components/Home/Category";
+import SpringCollection from "../components/Home/SpringCollection";
+import Starting from "../components/Home/Starting";
 import TrendyProducts from "../components/Home/TrendyProducts";
 
 const HomePage = () => {
@@ -8,6 +10,8 @@ const HomePage = () => {
     <Banner />
     <Category />
     <TrendyProducts />
+    <SpringCollection />
+    <Starting />
     </>
   )
   
