@@ -1,5 +1,7 @@
+
 import Banner from "../components/Home/Banner";
 import Category from "../components/Home/Category";
+import Features from "../components/Home/Features";
 import LimitedEdition from "../components/Home/LimitedEdition";
 import Logos from "../components/Home/Logos";
 import SpringCollection from "../components/Home/SpringCollection";
@@ -16,6 +18,7 @@ const HomePage = () => {
     <Starting />
     <LimitedEdition />
     <Logos />
+    <Features />
     </>
   )
   
