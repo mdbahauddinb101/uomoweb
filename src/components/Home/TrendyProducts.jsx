@@ -7,6 +7,8 @@ import axios from "axios"
 
 
 const TrendyProducts = () => {
+
+  
   let [activeCategory, setActiveCategory] = useState("ALL");
   let [products, setProducts] = useState([]);
   let [filterProducts, setFilterProducts] = useState([]);

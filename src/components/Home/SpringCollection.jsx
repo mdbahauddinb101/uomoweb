@@ -53,7 +53,7 @@ const SpringCollection = () => {
             </button>
             
            <Countdown
-    date={Date.now() + 1000000}
+    date={Date.now() + 90000000}
     renderer={renderer}
   />
           </div>

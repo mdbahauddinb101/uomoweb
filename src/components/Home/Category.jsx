@@ -46,11 +46,11 @@ const Category = () => {
           })}
 
           <div className="h-71.25 w-82.5 bg-[#F5E6E0] pt-27.25 pr-17.5 pb-10 pl-10">
-            <h2 className="mb-2 font-medium font-jost text-[26px] leading-[]100%">
+            <h2 className="mb-2 font-medium font-jost text-[26px] leading-[100%]">
               <span className="font-jost font-bold text-[26px] leading-[100%]">E-GIFT</span> CARDS
             </h2>
             <h3 className="mb-4 font-jost font-normal text-[14px] leading-6">Surprise someone with the gift they really want.</h3>
-            <button className="text-primary font-jost after:bg-primary cursor-pointer pb-2 text-[14px] leading-6 font-medium  relative after:absolute   content-[''] after:bottom-0 after:left-0 after:h-0.5 after:w-12.5">DISCOVER MORE</button>
+            <button className="text-primary after:bg-primary relative text-sm leading-6 font-medium after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:duration-500 after:content-[''] hover:after:w-[52.05px]">DISCOVER MORE</button>
           </div>
         </div>
       </div>
