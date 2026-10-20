@@ -6,9 +6,10 @@ const Product = ({item}) => {
    
   return (
     <div className="max-w-82.5 group relative">
+      <div className="bg-white p-2">
         <Image src={item.thumbnail} alt="product1"  />
         <div className="mt-3.5">
-            <div className="flex justify-between">
+            <div className="flex justify-between mb-2.5">
             <h4 className="text-sm text-gray font-normal">{item.category}</h4>
             <button>
                 
@@ -24,13 +25,14 @@ const Product = ({item}) => {
 </svg>
             </button>
             </div>
-            <h3 className="text-base text-primary font-normal">{item.title}</h3>
-            <h5 className="text-base text-primary font-normal">{item.price}</h5>
+            <h3 className="text-base text-primary font-normal mb-2.5">{item.title}</h3>
+            <h5 className="text-base text-primary font-normal mb-2.5">{item.price}</h5>
         </div>
         <div className="text-center">
-        <button className="h-12.5 w-77.5 bg-white text-center font-medium text-sm text-black invisible duration-500 ease-linear  group-hover:visible absolute left-2/4 bottom-25 translate-x-[-50%] cursor-pointer shadow-lg">
+        <button className="lg:h-12.5 lg:w-77.5 bg-white text-center font-medium text-sm text-black invisible duration-500 ease-linear  group-hover:visible absolute left-2/4 bottom-25 translate-x-[-50%] cursor-pointer shadow-lg">
             ADD TO CART
         </button>
+        </div>
         </div>
     </div>
   )

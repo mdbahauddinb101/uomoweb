@@ -13,10 +13,10 @@ const HomePage = () => {
     <>
     <Banner />
     <Category />
-    {/* <TrendyProducts />
+    <TrendyProducts />
     <SpringCollection />
     <Starting />
-    <LimitedEdition />
+    {/* <LimitedEdition />
     <Logos />
     <Features /> */}
     </>

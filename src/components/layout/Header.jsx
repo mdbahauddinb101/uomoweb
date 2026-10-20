@@ -8,7 +8,7 @@ const Header = () => {
   const [activeMenu, setActiveMenu] = useState(false);
 
   return (
-    <header className="relative pt-4 lg:pt-7.25 pb-4 lg:pb-7">
+    <header className="pt-4 lg:pt-7.25 pb-4 lg:pb-7">
       <nav>
         <div className="container">
           <div className="flex flex-col lg:flex-row">
