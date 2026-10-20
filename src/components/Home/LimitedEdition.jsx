@@ -26,14 +26,36 @@ setProducts(res.data.products)
 
 
   return (
-    <section>
+    <section className="mb-12.5 lg:mb-20.75">
       <div className="container relative ">
-       <Title name="LIMITED" namebold="EDITION" />
-       <div>
-        <Swiper slidesPerView={4} modules={[Navigation]} className="mySwiper" navigation={{
+       <Title name="LIMITED" namebold="EDITION"  />
+       <div className="bg-gray-100 pt-2.25 lg:pt-0">
+        <Swiper  modules={[Navigation]} className="mySwiper" navigation={{
             nextEl: '.next-button',
             prevEl: '.prev-button',
-        }} >
+        }}
+        
+
+
+        breakpoints={{
+           
+            320: {
+              slidesPerView: 2,
+              spaceBetween: 10,
+             
+            },
+    
+            768: {
+              slidesPerView: 3,
+            
+            },
+          
+            1024: {
+              slidesPerView: 4,
+            },
+        }}
+        
+        >
             {products.map((item) => (
                 <SwiperSlide >
                     <Product item={item} key={item.id} />
@@ -43,11 +65,11 @@ setProducts(res.data.products)
         
         <div className="slideBtn">
 
-            <button className="prev-button absolute top-2/4 translate-y-[50%] -left-5">
-                <FaAngleLeft size={25} className="text-gray"/>
+            <button className="prev-button absolute top-2/4 translate-y-[20%] lg:translate-y-[50%] left-0 -lg:left-5 z-50 rounded-full bg-white border border-gray">
+                <FaAngleLeft size={50} className="text-gray"/>
             </button>
-            <button className="next-button absolute top-2/4 translate-y-[50%] -right-5">
-                <FaAngleRight size={25} className="text-gray"/>
+            <button className="next-button absolute top-2/4 translate-y-[20%] lg:translate-y-[50%] right-0 -lg:left-5 z-50 rounded-full bg-white border border-gray">
+                <FaAngleRight size={50} className="text-gray"/>
             </button>
 
         </div>
