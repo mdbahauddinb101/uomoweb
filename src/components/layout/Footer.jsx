@@ -2,20 +2,20 @@ import Image from "../common/Image";
 
 const Footer = () => {
   return (
-    <footer className="bg-[#E4E4E4]">
+    <footer className="bg-[#E4E4E4] p-3.75 lg:p-0">
       <div className="container">
-        <div className="flex justify-center gap-30 pt-25 pb-22">
-          <ul className="flex flex-col gap-11.25">
+        <div className="flex flex-wrap lg:flex-nowrap lg:justify-center gap-10 lg:gap-30 pt-12.25 lg:pt-25 pb-12.25 lg:pb-22">
+          <ul className="flex flex-col gap-10 lg:gap-11">
             <li>
               <Image src="/public/logo.png" alt="Logo" />
             </li>
-            <li>
+            <li className="mb-17.5 lg:mb-0">
               1418 River Drive, Suite 35 Cottonhall, CA 9622 United States
             </li>
-            <li>sale@uomo.com</li>
-            <li>+1 246-345-0695</li>
+            <li className="hidden lg:block">sale@uomo.com</li>
+            <li className="hidden lg:block">+1 246-345-0695</li>
             <li>
-              <div className="flex gap-9">
+              <div className="flex gap-5 lg:gap-9">
                 <button>
                   <svg
                     width="8"
@@ -90,7 +90,7 @@ const Footer = () => {
             </li>
           </ul>
 
-          <ul className="flex flex-col gap-4">
+          <ul className="flex flex-col lg:gap-4 ">
             <li className="font-jost mb-6 text-[18px] leading-[100%] font-medium">
               COMPANY
             </li>
@@ -111,7 +111,7 @@ const Footer = () => {
             </li>
           </ul>
 
-          <ul className="flex flex-col gap-4">
+          <ul className="flex flex-col lg:gap-4">
             <li className="font-jost mb-6 text-[18px] leading-[100%] font-medium">
               SHOP
             </li>
@@ -132,7 +132,7 @@ const Footer = () => {
             </li>
           </ul>
 
-          <ul className="flex flex-col gap-4">
+          <ul className="flex flex-col lg:gap-4">
             <li className="font-jost mb-6 text-[18px] leading-[100%] font-medium">
               HELP
             </li>
@@ -164,30 +164,39 @@ const Footer = () => {
               Be the first to get the latest news about trends, promotions, and
               much more!
             </li>
-            <li className="relative mb-10.25">
-              <input
-                type="email"
-                placeholder="Your email address"
+            <li className=" mb-10.25">
 
-                className="font-jost placeholder:text-primary h-13.75 w-82.5 bg-white pl-5.25 text-[14px] leading-6 font-normal placeholder:pl-1 focus:border-blue-500 focus:outline-none"
-              />
-              <button className="text-primary absolute right-10 bottom-4.25 cursor-pointer">
-                JOIN
-              </button>
+
+
+<div className="relative w-full max-w-md">
+  <input 
+    type="email" 
+    placeholder="Enter your email" 
+    className="w-full  bg-white py-3 pl-4 pr-28 text-sm outline-none focus:border-primary"
+  />
+
+  <button className="absolute right-1 top-1/2 -translate-y-1/2  px-5 py-2 text-[18px] font-medium text-black cursor-pointer">
+    Join
+  </button>
+</div>
+
+
             </li>
             <li className="font-jost mb-2.75 text-[15px] leading-[100%] font-medium">
               Secure payments
             </li>
             <li>
-              <Image src="/src/assets/payment.png" alt="payment" />
+              <Image src="/src/assets/payment.png" alt="payment" className="mt-10 lg:mt-0" />
             </li>
           </ul>
         </div>
+
         <hr className="text-[#CFCDCD]"></hr>
+        <h5 className="text-left  mt-6.75 block lg:hidden">©2020 Uomo</h5>
         <div className="flex justify-between pb-7 pt-8.5">
-          <h5>©2020 Uomo</h5>
+           <h5 className="hidden lg:block">©2020 Uomo</h5>
           <div>
-            <ul className="flex gap-10">
+            <ul className="flex flex-wrap gap-5 lg:gap-10">
               <li className="text-gray">Language</li>
               <li className="flex gap-2">
                 United Kingdom | English

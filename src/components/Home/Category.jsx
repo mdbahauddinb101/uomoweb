@@ -45,7 +45,7 @@ const Category = () => {
             );
           })}
 
-          <div className="h-71.25 lg:w-82.5 bg-[#F5E6E0] pt-27.25 pr-17.5 pb-10 pl-10 m-3.75 lg:m-0">
+          <div className="h-71.25 lg:w-82.5 bg-[#F5E6E0] pt-27.25 pr-17.5 pb-50 pl-10 m-3.75 lg:m-0">
             <h2 className="mb-2 font-medium font-jost text-[26px] leading-[100%]">
               <span className="font-jost font-bold text-[26px] leading-[100%] block lg:inline pb-2 lg:pb-0">E-GIFT</span> CARDS
             </h2>
