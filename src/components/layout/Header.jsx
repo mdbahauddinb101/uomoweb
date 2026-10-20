@@ -1,18 +1,24 @@
 import { Link } from "react-router";
 import Image from "../common/Image";
 import navbardata from "../../api/navbardata.json";
+import { AiOutlineClose } from "react-icons/ai";
+import { useState } from "react";
 
 const Header = () => {
+  const [activeMenu, setActiveMenu] = useState(false);
 
   return (
-    <header className="pt-7.25 pb-7">
+    <header className="relative pt-7.25 pb-7">
       <nav>
         <div className="container">
-          <div className="flex">
-            <Link to="/">
-              <Image src="/public/logo.png" alt="logo" />
-            </Link>
-            <ul className="ml-14 flex gap-10.75">
+          <div className="flex flex-col lg:flex-row">
+            <div className="flex items-center justify-center">
+              <Link to="/">
+                <Image src="/public/logo.png" alt="logo" />
+              </Link>
+            </div>
+
+            <ul className="ml-14 hidden gap-10.75 lg:flex">
               {navbardata.map((item) => (
                 <li
                   className="text-primary after:bg-primary relative text-sm leading-6 font-medium after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:duration-500 after:content-[''] hover:after:w-[26.05px]"
@@ -23,8 +29,8 @@ const Header = () => {
               ))}
             </ul>
 
-            <div className="ml-auto flex gap-8">
-              <button>
+            <div className="ml-0 flex gap-0 lg:ml-auto lg:gap-8">
+              <button className="hidden lg:block">
                 <svg
                   width="21"
                   height="20"
@@ -32,7 +38,8 @@ const Header = () => {
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  <g clip-path="url(#clip0_6_7)">
+                  {/* Fixed clip-path to clipPath */}
+                  <g clipPath="url(#clip0_6_7)">
                     <path
                       d="M8.82291 0C3.95809 0 0 3.95121 0 8.80758C0 13.6642 3.95809 17.6152 8.82291 17.6152C13.688 17.6152 17.6458 13.6642 17.6458 8.80758C17.6458 3.95121 13.688 0 8.82291 0ZM8.82291 15.9892C4.85613 15.9892 1.62885 12.7675 1.62885 8.80762C1.62885 4.84773 4.85613 1.62602 8.82291 1.62602C12.7897 1.62602 16.017 4.84769 16.017 8.80758C16.017 12.7675 12.7897 15.9892 8.82291 15.9892Z"
                       fill="#222222"
@@ -50,7 +57,7 @@ const Header = () => {
                 </svg>
               </button>
 
-              <button>
+              <button className="hidden lg:block">
                 <svg
                   width="21"
                   height="20"
@@ -58,7 +65,7 @@ const Header = () => {
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  <g clip-path="url(#clip0_6_29)">
+                  <g clipPath="url(#clip0_6_29)">
                     <path
                       d="M10.0175 11.2652C3.99775 11.2652 0.682495 14.108 0.682495 19.2701C0.682495 19.6732 1.00982 20 1.41369 20H18.6212C19.0251 20 19.3524 19.6732 19.3524 19.2701C19.3524 14.1083 16.0372 11.2652 10.0175 11.2652ZM2.17149 18.5402C2.4591 14.6805 5.09505 12.7251 10.0175 12.7251C14.9399 12.7251 17.5759 14.6805 17.8637 18.5402H2.17149Z"
                       fill="#222222"
@@ -76,7 +83,7 @@ const Header = () => {
                 </svg>
               </button>
 
-              <button>
+              <button className="hidden lg:block">
                 <svg
                   width="21"
                   height="20"
@@ -84,7 +91,7 @@ const Header = () => {
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  <g clip-path="url(#clip0_6_54)">
+                  <g clipPath="url(#clip0_6_54)">
                     <path
                       d="M18.4252 3.30806C16.2463 1.13349 12.7016 1.13349 10.5232 3.30806L10.0172 3.81285L9.51156 3.30806C7.33321 1.13319 3.78822 1.13319 1.60986 3.30806C-0.524272 5.43848 -0.53813 8.81543 1.57772 11.1634C3.50752 13.3041 9.19902 17.929 9.44051 18.1248C9.60444 18.2578 9.8017 18.3226 9.99777 18.3226C10.0043 18.3226 10.0107 18.3226 10.0169 18.3223C10.2198 18.3317 10.4241 18.2622 10.5934 18.1248C10.8349 17.929 16.5269 13.3041 18.4573 11.1631C20.5729 8.81543 20.559 5.43848 18.4252 3.30806ZM17.1423 9.98189C15.6377 11.6505 11.5018 15.0919 10.0169 16.3131C8.53207 15.0922 4.39708 11.6511 2.89275 9.98218C1.41673 8.34448 1.40287 6.01215 2.86062 4.55694C3.60511 3.81403 4.58284 3.44228 5.56056 3.44228C6.53829 3.44228 7.51601 3.81373 8.26051 4.55694L9.37269 5.66718C9.50508 5.79934 9.67196 5.87822 9.8471 5.90589C10.1313 5.96682 10.4398 5.88764 10.6609 5.66748L11.7737 4.55694C13.2629 3.07082 15.6854 3.07112 17.1739 4.55694C18.6316 6.01215 18.6177 8.34448 17.1423 9.98189Z"
                       fill="#222222"
@@ -98,23 +105,30 @@ const Header = () => {
                 </svg>
               </button>
 
-              <button className="relative">
-                <svg
-                  width="21"
-                  height="20"
-                  viewBox="0 0 21 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M17.6869 4.6875H15.3021C14.9912 2.05164 12.74 0 10.0174 0C7.29479 0 5.04353 2.05164 4.73264 4.6875H2.3478C1.91556 4.6875 1.56519 5.03727 1.56519 5.46875V19.2188C1.56519 19.6502 1.91556 20 2.3478 20H17.6869C18.1192 20 18.4696 19.6502 18.4696 19.2188V5.46875C18.4696 5.03727 18.1192 4.6875 17.6869 4.6875ZM10.0174 1.5625C11.8754 1.5625 13.4225 2.91621 13.7214 4.6875H6.31332C6.61228 2.91621 8.1593 1.5625 10.0174 1.5625ZM16.9043 18.4375H3.13041V6.25H4.69563V8.59375C4.69563 9.02523 5.046 9.375 5.47824 9.375C5.91047 9.375 6.26084 9.02523 6.26084 8.59375V6.25H13.7739V8.59375C13.7739 9.02523 14.1243 9.375 14.5565 9.375C14.9887 9.375 15.3391 9.02523 15.3391 8.59375V6.25H16.9043V18.4375Z"
-                    fill="#222222"
-                  />
-                </svg>
-                <div className="w-4 h-4 bg-[#B9A16B] rounded-full flex items-center justify-center text-white text-xs font-bold absolute  -bottom-1.5 -right-0.75">3</div>
-              </button>
+              <div className="absolute top-8 right-3.75 lg:relative lg:top-auto lg:right-auto">
+                <button className="relative">
+                  <svg
+                    width="21"
+                    height="20"
+                    viewBox="0 0 21 20"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M17.6869 4.6875H15.3021C14.9912 2.05164 12.74 0 10.0174 0C7.29479 0 5.04353 2.05164 4.73264 4.6875H2.3478C1.91556 4.6875 1.56519 5.03727 1.56519 5.46875V19.2188C1.56519 19.6502 1.91556 20 2.3478 20H17.6869C18.1192 20 18.4696 19.6502 18.4696 19.2188V5.46875C18.4696 5.03727 18.1192 4.6875 17.6869 4.6875ZM10.0174 1.5625C11.8754 1.5625 13.4225 2.91621 13.7214 4.6875H6.31332C6.61228 2.91621 8.1593 1.5625 10.0174 1.5625ZM16.9043 18.4375H3.13041V6.25H4.69563V8.59375C4.69563 9.02523 5.046 9.375 5.47824 9.375C5.91047 9.375 6.26084 9.02523 6.26084 8.59375V6.25H13.7739V8.59375C13.7739 9.02523 14.1243 9.375 14.5565 9.375C14.9887 9.375 15.3391 9.02523 15.3391 8.59375V6.25H16.9043V18.4375Z"
+                      fill="#222222"
+                    />
+                  </svg>
+                  <div className="absolute -right-0.75 -bottom-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#B9A16B] text-xs font-bold text-white">
+                    3
+                  </div>
+                </button>
+              </div>
 
-              <button>
+              <button
+                onClick={() => setActiveMenu(!activeMenu)}
+                className="absolute top-9 left-3.75 sm:block lg:hidden"
+              >
                 <svg
                   width="26"
                   height="18"
@@ -127,6 +141,35 @@ const Header = () => {
                   <rect y="16" width="25.0435" height="2" fill="#222222" />
                 </svg>
               </button>
+
+              {/* Mobile Menu with smooth transition */}
+              <div
+                className={`bg-black w-full lg:hidden h-screen text-center pt-10 absolute top-0 z-50 transition-all duration-300 ${
+                  activeMenu ? "left-0" : "-left-full"
+                }`}
+              >
+                <ul className="flex flex-col">
+                  {navbardata.map((item) => (
+                    <li
+                      className="text-white text-sm leading-6 font-medium p-4"
+                      key={item.id}
+                    >
+                      <Link to={item.path} onClick={() => setActiveMenu(false)}>
+                        {item.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  onClick={() => setActiveMenu(false)}
+                  className="absolute top-10 right-4"
+                >
+                  <AiOutlineClose
+                    size={30}
+                    className="absolute top-1 right-4 text-white"
+                  />
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -2,7 +2,7 @@
 
 const ShopPage = () => {
   return (
-    <div>ShopPage</div>
+    <div></div>
   )
 }
 
