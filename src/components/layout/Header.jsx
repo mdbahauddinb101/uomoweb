@@ -8,7 +8,7 @@ const Header = () => {
   const [activeMenu, setActiveMenu] = useState(false);
 
   return (
-    <header className="relative pt-7.25 pb-7">
+    <header className="relative pt-4 lg:pt-7.25 pb-4 lg:pb-7">
       <nav>
         <div className="container">
           <div className="flex flex-col lg:flex-row">
@@ -105,7 +105,7 @@ const Header = () => {
                 </svg>
               </button>
 
-              <div className="absolute top-8 right-3.75 lg:relative lg:top-auto lg:right-auto">
+              <div className="absolute top-4 right-3.75 lg:relative lg:top-auto lg:right-auto">
                 <button className="relative">
                   <svg
                     width="21"
@@ -127,7 +127,7 @@ const Header = () => {
 
               <button
                 onClick={() => setActiveMenu(!activeMenu)}
-                className="absolute top-9 left-3.75 sm:block lg:hidden"
+                className="absolute top-6 left-3.75 sm:block lg:hidden"
               >
                 <svg
                   width="26"

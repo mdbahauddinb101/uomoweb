@@ -12,8 +12,8 @@ const HomePage = () => {
   return (
     <>
     <Banner />
-    {/* <Category />
-    <TrendyProducts />
+    <Category />
+    {/* <TrendyProducts />
     <SpringCollection />
     <Starting />
     <LimitedEdition />

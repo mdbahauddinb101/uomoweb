@@ -13,7 +13,7 @@ const Banner = () => {
 
 
   return (
-   <section className="mx-0 lg:mx-5 mt-4.75 "> 
+   <section className="mx-0 lg:mx-5 mt-0 lg:mt-4.75 "> 
 
 
 <Swiper pagination={{clickable: true}} modules={[Pagination]} className="mySwiper">
