@@ -2,7 +2,7 @@ import Image from "../common/Image";
 
 const Footer = () => {
   return (
-    <footer className="bg-[#E4E4E4] p-3.75 lg:p-0">
+    <footer className="bg-[#E4E4E4] p-3.75 lg:p-0 mb-15 lg:mb-0">
       <div className="container">
         <div className="flex flex-wrap lg:flex-nowrap lg:justify-center gap-10 lg:gap-30 pt-12.25 lg:pt-25 pb-12.25 lg:pb-22">
           <ul className="flex flex-col gap-10 lg:gap-11">

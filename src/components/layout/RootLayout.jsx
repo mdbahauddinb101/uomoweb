@@ -1,6 +1,7 @@
 import { Outlet } from "react-router";
 import Header from "./Header";
 import Footer from "./Footer";
+import MobileNav from "./MobileNav";
 
 
 const RootLayout = () => {
@@ -8,6 +9,7 @@ const RootLayout = () => {
     <main>
       <Header />
       <Outlet />
+      <MobileNav />
       <Footer />
     </main>
   );
