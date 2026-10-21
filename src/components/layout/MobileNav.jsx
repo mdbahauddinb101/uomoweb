@@ -1,10 +1,14 @@
+import { Link } from "react-router";
+
 const MobileNav = () => {
   return (
     <section className="fixed w-full bottom-0  z-50">
       <div className="bg-white py-4 block lg:hidden">
         <ul className="flex justify-center gap-12.25">
           <li>
+            <Link to="/">
             <div className="flex flex-col items-center gap-2">
+              
             <svg
               width="18"
               height="18"
@@ -25,10 +29,14 @@ const MobileNav = () => {
               </defs>
             </svg>
             <h5>Home</h5>
+              
             </div>
+            </Link>
           </li>
           <li>
+            <Link to="/shop">
             <div className="flex flex-col items-center gap-2">
+                
             <svg
               width="18"
               height="18"
@@ -49,10 +57,14 @@ const MobileNav = () => {
               </defs>
             </svg>
             <h5>Shop</h5>
+            
             </div>
+            </Link>
           </li>
           <li>
+             <Link to="/Wishlist">
             <div className="flex flex-col items-center gap-2">
+               
             <svg
               width="16"
               height="16"
@@ -73,10 +85,14 @@ const MobileNav = () => {
               </defs>
             </svg>
             <h5>Wishlist</h5>
+            
             </div>
+            </Link>
           </li>
           <li>
+            <Link to="/Cart">
             <div className="flex flex-col items-center gap-2 relative">
+                
             <svg
               width="16"
               height="16"
@@ -91,8 +107,11 @@ const MobileNav = () => {
             </svg>
             <span className="bg-[#B9A16B] rounded-full w-5 h-5 flex items-center justify-center text-white absolute bottom-9 left-4">3</span>
          <h5>Cart</h5>
+        
          </div>
+          </Link>
           </li>
+
         </ul>
       </div>
     </section>
