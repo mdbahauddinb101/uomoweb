@@ -5,8 +5,8 @@ const Starting = () => {
   return (
     <section>
         <div className="container">
-            <div className="flex flex-wrap gap-3.75 lg:gap-0 justify-between mt-3.75 lg:mt-25  mb-9.25 lg:mb-22.75">
-                <div className="h-99.5 w-full lg:w-172.5 relative ">
+            <div className="flex flex-wrap gap-3.75 lg:gap-0 justify-between mt-3.75 lg:mt-25  mb-9.25 lg:mb-22.75 ">
+                <div className="h-99.5 w-full lg:w-[49%] relative ">
                     <Image className="w-full h-full" src={StartingImage} alt="images" />  
                     <div className="group absolute top-0 left-0 w-full h-full flex items-end duration-500 opacity-80  hover:bg-red-500 ">
                        <div className="mb-12.5 ml-12.5">
@@ -21,7 +21,7 @@ const Starting = () => {
 
                 </div>
 
-                <div className="h-99.5 w-full lg:w-172.5 relative ">
+                <div className="h-99.5 w-full lg:w-[49%] relative ">
                     <Image className="w-full h-full" src={StartingImage} alt="images" />  
                     <div className="group absolute top-0 left-0 w-full h-full flex items-end duration-500 opacity-80  hover:bg-red-500 ">
                        <div className="mb-12.5 ml-12.5">
