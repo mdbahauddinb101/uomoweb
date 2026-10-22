@@ -2,7 +2,7 @@ import { Link } from "react-router";
 
 const MobileNav = () => {
   return (
-    <section className="fixed w-full bottom-0  z-50">
+    <section className="fixed w-full bottom-0 z-50">
       <div className="bg-white py-4 block lg:hidden">
         <ul className="flex justify-center gap-12.25">
           <li>

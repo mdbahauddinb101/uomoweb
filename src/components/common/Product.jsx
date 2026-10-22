@@ -7,10 +7,10 @@ const Product = ({item}) => {
   return (
     <div className="max-w-82.5 group relative">
       <div className="bg-white p-2">
-        <Image src={item.thumbnail} alt="product1"/>
+        <Image className="w-full" src={item.thumbnail} alt="product1"/>
         <div className="mt-3.5">
             <div className="flex justify-between mb-2.5">
-            <h4 className="text-sm text-gray font-normal">{item.category}</h4>
+            <h4 className="text-sm text-gray font-normal capitalize">{item.category}</h4>
             <button>
                 
 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
