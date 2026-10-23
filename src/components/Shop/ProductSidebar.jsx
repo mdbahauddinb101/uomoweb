@@ -1,19 +1,10 @@
 import { useMemo, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { addproduct } from "../../slices/productSlice";
 
 /* ---------- Data (swap with props / API data) ---------- */
 
-const CATEGORIES = [
-  "Dresses",
-  "Sweatshirts",
-  "Jackets",
-  "Jeans",
-  "Men",
-  "Shorts",
-  "Swimwear",
-  "T-Shirts & Tops",
-  "Trousers",
-  "Jumpers & Cardigans",
-];
+
 
 const COLORS = [
   { name: "Navy", value: "#0f2a6b" },
@@ -158,12 +149,23 @@ function PriceRange({ value, onChange }) {
 /* ---------- Sidebar ---------- */
 
 export default function ProductSidebar({ onChange }) {
+  let products = useSelector(state => state.product.products);
+  let dispatch = useDispatch();
+ let categories = products.map((item)=>{
+        return item.category
+ })
+
+ const CATEGORIES = [...new Set(categories)]
+  
+;
+
   const [category, setCategory] = useState(null);
   const [color, setColor] = useState("Grey");
   const [sizes, setSizes] = useState([]);
   const [brandQuery, setBrandQuery] = useState("");
   const [brands, setBrands] = useState([]);
   const [price, setPrice] = useState([29, 937]);
+  const [filterProducts, setFilterProducts] = useState([]);
 
   const toggle = (list, setList, item) =>
     setList(list.includes(item) ? list.filter((i) => i !== item) : [...list, item]);
@@ -175,6 +177,15 @@ export default function ProductSidebar({ onChange }) {
       ),
     [brandQuery]
   );
+
+  const handleActiveCategory = (name) =>{
+    setCategory(name);
+
+    let filterProduct = products.filter((item) => item.category === name);
+    dispatch(filterProduct(filterProduct));
+    
+
+  } 
 
   // Optional: notify the parent whenever filters change
   // useEffect(() => onChange?.({ category, color, sizes, brands, price }), [...]);
@@ -189,8 +200,8 @@ export default function ProductSidebar({ onChange }) {
               <li key={name}>
                 <button
                   type="button"
-                  onClick={() => setCategory(category === name ? null : name)}
-                  className={`cursor-pointer text-sm transition-colors hover:text-gray ${
+                  onClick={() => handleActiveCategory(name)}
+                  className={`cursor-pointer text-sm transition-colors hover:text-gray capitalize ${
                     category === name ? "font-medium text-primary" : "text-primary"
                   }`}
                 >
