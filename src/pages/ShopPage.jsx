@@ -8,7 +8,7 @@ const ShopPage = () => {
    <>
    <ShopBanner />
    
-    <div className="container flex justify-between gap-15 mt-9">
+    <div className="container flex justify-center gap-15 mt-9">
    <ProductSidebar />
    <ShopAllProducts />
    </div>

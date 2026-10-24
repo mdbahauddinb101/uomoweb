@@ -159,7 +159,7 @@ export default function ProductSidebar({ onChange }) {
   
 ;
 
-  const [category, setCategory] = useState(null);
+  const [category, setCategory] = useState("All");
   const [color, setColor] = useState("Grey");
   const [sizes, setSizes] = useState([]);
   const [brandQuery, setBrandQuery] = useState("");
@@ -191,7 +191,7 @@ export default function ProductSidebar({ onChange }) {
   // useEffect(() => onChange?.({ category, color, sizes, brands, price }), [...]);
 
   return (
-    <aside className="w-full max-w-56 font-jost text-primary">
+    <aside className="w-full max-w-56 font-jost text-primary mb-40">
       <div className="flex flex-col gap-9">
         {/* Categories */}
         <FilterSection title="Product Categories">
@@ -199,9 +199,9 @@ export default function ProductSidebar({ onChange }) {
             <li>
               <button
                 type="button"
-                onClick={() => handleActiveCategory(null)}
+                onClick={() => handleActiveCategory("All")}
                 className={`cursor-pointer text-sm transition-colors hover:text-gray capitalize ${
-                  category === null ? "font-medium text-primary" : "text-primary"
+                  category === "All" ? "font-medium text-primary" : "text-primary"
                 }`}
               >
                 All

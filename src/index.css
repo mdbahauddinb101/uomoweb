@@ -68,9 +68,13 @@
 }
 
 
-
-
-
-
-
 }
+
+
+
+.pagination.justify-content-center {
+    --pagination-justify-content-fb: center;
+    margin-bottom: 40px !important;
+    margin-top: 20px !important;
+}
+
