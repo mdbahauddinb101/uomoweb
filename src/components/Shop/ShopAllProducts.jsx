@@ -117,7 +117,7 @@ const ShopAllProducts = () => {
       </div>
 
       {totalPages > 0 && (
-        <div className="mt-auto pt-8">
+        <div className="mt-auto ">
         <ResponsivePagination
           current={currentPage}
           total={totalPages}
