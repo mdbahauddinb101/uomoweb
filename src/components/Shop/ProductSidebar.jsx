@@ -191,7 +191,7 @@ export default function ProductSidebar({ onChange }) {
   // useEffect(() => onChange?.({ category, color, sizes, brands, price }), [...]);
 
   return (
-    <aside className="w-full max-w-56 font-jost text-primary mb-40">
+    <aside className="w-full min-h-300 max-w-56 font-jost text-primary mb-40">
       <div className="flex flex-col gap-9">
         {/* Categories */}
         <FilterSection title="Product Categories">
