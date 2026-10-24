@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { addproduct } from "../../slices/productSlice";
+import { addproduct, filterproduct  } from "../../slices/productSlice";
 
 /* ---------- Data (swap with props / API data) ---------- */
 
@@ -149,7 +149,7 @@ function PriceRange({ value, onChange }) {
 /* ---------- Sidebar ---------- */
 
 export default function ProductSidebar({ onChange }) {
-  let products = useSelector(state => state.product.products);
+  let products = useSelector(state => state.product.products.products);
   let dispatch = useDispatch();
  let categories = products.map((item)=>{
         return item.category
@@ -182,7 +182,7 @@ export default function ProductSidebar({ onChange }) {
     setCategory(name);
 
     let filterProduct = products.filter((item) => item.category === name);
-    dispatch(filterProduct(filterProduct));
+    dispatch(filterproduct(filterProduct));
     
 
   } 
@@ -196,6 +196,17 @@ export default function ProductSidebar({ onChange }) {
         {/* Categories */}
         <FilterSection title="Product Categories">
           <ul className="flex flex-col gap-2.5">
+            <li>
+              <button
+                type="button"
+                onClick={() => handleActiveCategory(null)}
+                className={`cursor-pointer text-sm transition-colors hover:text-gray capitalize ${
+                  category === null ? "font-medium text-primary" : "text-primary"
+                }`}
+              >
+                All
+              </button>
+            </li>
             {CATEGORIES.map((name) => (
               <li key={name}>
                 <button

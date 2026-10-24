@@ -14,7 +14,7 @@ const ShopAllProducts = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotallPages] = useState(0);
-  let filterProducts = useSelector(state => state.product.products);
+  let filterProducts = useSelector(state => state.product.products.filter);
   let dispatch = useDispatch()
  
 
@@ -25,7 +25,7 @@ const ShopAllProducts = () => {
       .then((res) => {
         setProducts(res.data.products);
         setLoading(false);
-         let total = Math.floor(res.data.products.length / 9);
+         let total = filterProducts.length > 0 ? Math.ceil(filterProducts.length / 9) : Math.ceil(products.length / 9);
          setTotallPages(total);
     dispatch( addproduct(res.data.products))
       })
@@ -34,7 +34,7 @@ const ShopAllProducts = () => {
         throw new Error("Something went wrong")
      
       });
-  }, []);
+  }, [filterProducts]);
 
   const handleView = (view) => {
     setView(view);
@@ -116,11 +116,19 @@ const ShopAllProducts = () => {
       {/* show all products */}
       <div style={view == 2? {display: "grid" , gridTemplateColumns: "1fr 1fr"}: view ==3 ?
       {display:"grid", gridTemplateColumns: "1fr 1fr 1fr"}:{display:"grid", gridTemplateColumns: "1fr 1fr 1fr 1fr"} } className="gap-7.5">
-        {filterProducts.slice((currentPage-1) * 9 , currentPage * 9).map((item) => (
+        {filterProducts.length > 0 ? filterProducts.slice((currentPage-1) * 9 , currentPage * 9).map((item) => (
           <div className="flex justify-center">
           <Product item={item} key={item.id} />
           </div>
-        ))}
+        ))
+      :
+        products.slice((currentPage-1) * 9 , currentPage * 9).map((item) => (
+          <div className="flex justify-center">
+          <Product item={item} key={item.id} />
+          </div>
+        ))
+      
+      }
       </div>
 
 
