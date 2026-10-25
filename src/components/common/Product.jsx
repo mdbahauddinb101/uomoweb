@@ -1,8 +1,22 @@
+import { addtocart } from "../../slices/cartSlice";
 import Image from "./Image"
+import {useDispatch} from "react-redux"
 
 
 
 const Product = ({item}) => {
+
+  const dispatch = useDispatch();
+
+  const handleAddtoCart = (item) => {
+    dispatch(addtocart({
+      id: item.id,
+      title: item.title,
+      price: item.price,
+      image: item.thumbnail,
+  
+    }));
+  }
    
   return (
     <div className="max-w-82.5 group relative">
@@ -29,7 +43,7 @@ const Product = ({item}) => {
             <h5 className="text-base text-primary font-normal mb-2.5">{item.price}</h5>
         </div>
         <div className="text-center">
-        <button className="lg:h-12.5 lg:w-77.5 bg-white text-center font-medium text-sm text-black invisible duration-500 ease-linear  group-hover:visible absolute left-2/4 bottom-25 translate-x-[-50%] cursor-pointer shadow-lg">
+        <button onClick={() => handleAddtoCart(item)} className="lg:h-12.5 lg:w-77.5 bg-white text-center font-medium text-sm text-black invisible duration-500 ease-linear  group-hover:visible absolute left-2/4 bottom-25 translate-x-[-50%] cursor-pointer shadow-lg">
             ADD TO CART
         </button>
         </div>

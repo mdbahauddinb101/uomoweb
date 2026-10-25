@@ -3,12 +3,15 @@ import Image from "../common/Image";
 import navbardata from "../../api/navbardata.json";
 import { AiOutlineClose } from "react-icons/ai";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 const Header = () => {
   const [activeMenu, setActiveMenu] = useState(false);
+  let cart = useSelector((state) => state.cart.products);
+  const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
 
   return (
-    <header className="pt-4 lg:pt-7.25 pb-4 lg:pb-7">
+    <header className="pt-4 pb-4 lg:pt-7.25 lg:pb-7">
       <nav>
         <div className="container">
           <div className="flex flex-col lg:flex-row">
@@ -104,7 +107,7 @@ const Header = () => {
                   </defs>
                 </svg>
               </button>
-
+              {/* cart...................... */}
               <div className="absolute top-4 right-3.75 lg:relative lg:top-auto lg:right-auto">
                 <button className="relative">
                   <svg
@@ -120,11 +123,11 @@ const Header = () => {
                     />
                   </svg>
                   <div className="absolute -right-0.75 -bottom-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#B9A16B] text-xs font-bold text-white">
-                    3
+                {totalItems}
                   </div>
                 </button>
               </div>
-
+              {/* cart....................... */}
               <button
                 onClick={() => setActiveMenu(!activeMenu)}
                 className="absolute top-6 left-3.75 sm:block lg:hidden"
@@ -144,14 +147,14 @@ const Header = () => {
 
               {/* Mobile Menu with smooth transition */}
               <div
-                className={`bg-black w-full lg:hidden h-screen text-center pt-10 absolute top-0 z-50 transition-all duration-300 ${
+                className={`absolute top-0 z-50 h-screen w-full bg-black pt-10 text-center transition-all duration-300 lg:hidden ${
                   activeMenu ? "left-0" : "-left-full"
                 }`}
               >
                 <ul className="flex flex-col">
                   {navbardata.map((item) => (
                     <li
-                      className="text-white text-sm leading-6 font-medium p-4"
+                      className="p-4 text-sm leading-6 font-medium text-white"
                       key={item.id}
                     >
                       <Link to={item.path} onClick={() => setActiveMenu(false)}>
