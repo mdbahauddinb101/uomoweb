@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import Image from "../common/Image";
 import navbardata from "../../api/navbardata.json";
 import { AiOutlineClose } from "react-icons/ai";
@@ -9,6 +9,11 @@ const Header = () => {
   const [activeMenu, setActiveMenu] = useState(false);
   let cart = useSelector((state) => state.cart.products);
   const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+  let navigate = useNavigate();
+
+  const handleCart = () => {
+    navigate("/cart");
+  };
 
   return (
     <header className="pt-4 pb-4 lg:pt-7.25 lg:pb-7">
@@ -109,7 +114,7 @@ const Header = () => {
               </button>
               {/* cart...................... */}
               <div className="absolute top-4 right-3.75 lg:relative lg:top-auto lg:right-auto">
-                <button className="relative">
+                <button onClick={handleCart} className="relative cursor-pointer">
                   <svg
                     width="21"
                     height="20"
