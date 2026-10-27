@@ -5,6 +5,9 @@ import HomePage from "./pages/HomePage";
 import ShopPage from "./pages/ShopPage";
 import ShopSingle from "./pages/ShopSingle";
 import CartPage from "./pages/CartPage";
+import Login from "./pages/Login";
+import Ragister from "./pages/Ragister";
+
 
 
 
@@ -18,6 +21,8 @@ const router = createBrowserRouter([
        { path: "/shop", Component: ShopPage },
         { path: "shop/:id", Component: ShopSingle },
         { path: "/cart", Component: CartPage },
+          { path: "/login", Component: Login },
+            { path: "/ragister", Component: Ragister },
        
     
       
