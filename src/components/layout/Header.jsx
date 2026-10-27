@@ -64,8 +64,8 @@ const Header = () => {
                   </defs>
                 </svg>
               </button>
-
-              <button className="hidden lg:block">
+              <Link to="/login">
+              <button className="hidden lg:block cursor-pointer">
                 <svg
                   width="21"
                   height="20"
@@ -90,6 +90,7 @@ const Header = () => {
                   </defs>
                 </svg>
               </button>
+              </Link>
 
               <button className="hidden lg:block">
                 <svg

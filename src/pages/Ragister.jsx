@@ -1,162 +1,131 @@
 import { useState } from "react";
+import { Link } from "react-router";
+import { auth,db } from "../firebase.config";
+import {
+  createUserWithEmailAndPassword,
+  updateProfile,
+  sendEmailVerification,
+} from "firebase/auth";
+import toast, { Toaster } from "react-hot-toast";
+import { ref, set } from "firebase/database";
 
-/* Floating-label input: the label sits inside the field and moves onto the
-   border when the field is focused or has a value. */
-function FloatingInput({ id, label, type = "text", className = "", ...props }) {
-  return (
-    <div className={`relative ${className}`}>
-      <input
-        id={id}
-        name={id}
-        type={type}
-        placeholder=" "
-        className="peer h-9.5 w-full border border-[#e5e5e5] bg-white px-3 text-sm text-primary outline-none transition-colors focus:border-2 focus:border-primary"
-        {...props}
-      />
-      <label
-        htmlFor={id}
-        className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 bg-white px-1 text-[13px] text-gray transition-all
-                   peer-focus:top-0 peer-focus:text-xs peer-focus:text-primary
-                   peer-not-placeholder-shown:top-0 peer-not-placeholder-shown:text-xs"
-      >
-        {label}
-      </label>
-    </div>
-  );
-}
-
-// function Tab({ active, onClick, children }) {
-//   return (
-//     <button
-//       type="button"
-//       role="tab"
-//       aria-selected={active}
-//       onClick={onClick}
-//       className={`cursor-pointer border-b-2 pb-1 text-sm uppercase transition-colors ${
-//         active
-//           ? "border-primary text-primary"
-//           : "border-transparent text-gray hover:text-primary"
-//       }`}
-//     >
-//       {children}
-//     </button>
-//   );
-// }
-
-function SubmitButton({ children }) {
-  return (
-    <button
-      type="submit"
-      className="mt-6 h-[42px] w-full cursor-pointer bg-primary text-sm uppercase text-white transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-    >
-      {children}
-    </button>
-  );
-}
-
-export function RegisterForm({ onCreateAccount }) {
-  const [form, setForm] = useState({ username: "", password: "", remember: false });
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setForm((prev) => ({ ...prev, [name]: type === "checkbox" ? checked : value }));
-  };
+export default function Register() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // TODO: call your login API with `form`
-    console.log("login", form);
+    setLoading(true);
+
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+
+    createUserWithEmailAndPassword(auth, email, password).then(
+      (userCredential) => {
+        updateProfile(auth.currentUser, {
+          displayName: name,
+          photoURL: "https://example.com/jane-q-user/profile.jpg",
+        })
+          .then(() => {
+            sendEmailVerification(auth.currentUser).then(() => {
+              const user = userCredential.user;
+              console.log(user);
+              toast.success("Account created Successfully");
+              setLoading(false);
+
+
+set(ref(db, 'users/' + user.uid), {
+    name: name,
+    email: email,
+   
+  });
+
+
+            });
+          })
+          .catch((error) => {
+            setLoading(false);
+            const errorcode = error.code;
+            if (errorcode.includes("auth/email-already-in-use")) {
+              toast.error("Email already in use");
+            } else {
+              toast.error("something went wrong");
+            }
+          });
+      },
+    );
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mt-6">
-      <FloatingInput
-        id="username"
-        label="Username or email address *"
-        autoComplete="username"
-        required
-        value={form.username}
-        onChange={handleChange}
-     
-   
-      />
+    <main className="font-jost text-primary flex min-h-screen items-center justify-center bg-white">
+      <Toaster position="top-center" reverseOrder={false} />
+      <div className="w-full max-w-87.5 px-4">
+        <h2 className="mb-6 text-center text-xl font-medium">Register</h2>
 
-      <FloatingInput
-        id="password"
-        label="Password *"
-        type="password"
-        autoComplete="current-password"
-        required
-        className="mt-6"
-        value={form.password}
-        onChange={handleChange}
-        
-      />
-
-      <div className="mt-4 flex items-center justify-between text-[13px]">
-        <label className="flex cursor-pointer items-center gap-2 text-gray">
-          <span className="relative flex size-4 shrink-0">
-            <input
-              type="checkbox"
-              name="remember"
-              checked={form.remember}
-              onChange={handleChange}
-              className="peer size-4 cursor-pointer appearance-none rounded-xs border border-[#d4d4d4] bg-white transition-colors checked:border-primary checked:bg-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-            />
-            <svg
-              viewBox="0 0 16 16"
-              fill="none"
-              stroke="white"
-              strokeWidth="2"
-              className="pointer-events-none absolute inset-0 hidden size-4 peer-checked:block"
-              aria-hidden="true"
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <input
+            type="text"
+            placeholder="Full name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            className="rounded border px-3 py-2"
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="rounded border px-3 py-2"
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            minLength={6}
+            className="rounded border px-3 py-2"
+          />
+          <input
+            type="password"
+            placeholder="Confirm password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+            minLength={6}
+            className="rounded border px-3 py-2"
+          />
+          {loading ? (
+            <button type="button" class="bg-indigo-500 ..." disabled>
+              <svg
+                class="mr-3 size-5 animate-spin ..."
+                viewBox="0 0 24 24"
+              ></svg>
+              Processing…
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="bg-primary rounded py-2 text-white"
             >
-              <path d="M3.5 8.5l3 3 6-6.5" />
-            </svg>
-          </span>
-          Remember me
-        </label>
+              Register
+            </button>
+          )}
 
-        <a href="/lost-password" className="text-primary underline underline-offset-2">
-          Lost password?
-        </a>
-      </div>
-
-      <SubmitButton>Ragister</SubmitButton>
-
-      <p className="mt-6 text-center text-[13px] text-gray">
-        Have an account?{" "}
-        <button
-          type="button"
-          onClick={onCreateAccount}
-          className="cursor-pointer text-primary underline underline-offset-2"
-        >
-          
-        </button>
-      </p>
-    </form>
-  );
-}
-
-
-
-export default function Ragister() {
-
-
-  return (
-    <main className="min-h-screen bg-white font-jost text-primary antialiased flex justify-center items-center">
-      <div className="container px-4 pb-16 pt-6">
-        <div className="mx-auto w-full max-w-87.5  ">
-          <div role="tablist" className="flex items-center justify-center">
-            
-            Ragister
-            
-         
-          </div>
-
-         
-            <RegisterForm />
-        </div>
+          <p className="text-center text-sm">
+            Already have an account?{" "}
+            <Link to="/login" className="underline">
+              Login
+            </Link>
+          </p>
+        </form>
       </div>
     </main>
   );
