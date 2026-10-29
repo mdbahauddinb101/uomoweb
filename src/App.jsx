@@ -10,6 +10,12 @@ import Ragister from "./pages/Ragister";
 import ForgotPassword from "./pages/ForgotPassword";
 import Profile from "./pages/Profile";
 import ShopSinglePage from "./pages/ShopSinglePage";
+import CollectionPage from "./pages/CollectionPage";
+import JournalPage from "./pages/JournalPage";
+import LookBookPage from "./pages/LookBookPage";
+import Pages from "./pages/Pages";
+import WishListPage from "./pages/WishListPage";
+
 
 
 
@@ -29,6 +35,11 @@ const router = createBrowserRouter([
              { path: "/passforgot", Component: ForgotPassword },
               { path: "/profile", Component: Profile },
                 { path: "/shopsinglepage/:id", Component: ShopSinglePage },
+                   { path: "/collection", Component: CollectionPage },
+                    { path: "/journal", Component: JournalPage  },
+                      { path: "/lookbook", Component: LookBookPage  },
+                       { path: "/pages", Component: Pages  },
+                          { path: "/wishlist", Component: WishListPage  }
             
        
     

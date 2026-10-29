@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import { addtocart, decrementQuantity } from "../slices/cartSlice";
+import { toggleWishlist } from "../slices/wishlistSlice";
 import "swiper/css";
 import "swiper/css/navigation";
 
@@ -101,13 +102,12 @@ export default function ShopSinglePage() {
   const cartItem = useSelector((state) =>
     state.cart.products.find((item) => String(item.id) === currentProductId)
   );
+  const wishlist = useSelector((state) => state.wishlist.products);
   const [activeThumb, setActiveThumb] = useState(0);
   const [size, setSize] = useState("S");
   const [color, setColor] = useState(1);
   const [draftQty, setDraftQty] = useState(1);
-  const [wished, setWished] = useState(false);
   const [tab, setTab] = useState("description");
-  const [relatedWished, setRelatedWished] = useState({});
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [relatedLoading, setRelatedLoading] = useState(true);
   const [added, setAdded] = useState(false);
@@ -140,6 +140,9 @@ export default function ShopSinglePage() {
   const currentProduct = relatedProducts.find(
     (product) => String(product.id) === currentProductId
   );
+  const wished = wishlist.some(
+    (product) => String(product.id) === currentProductId
+  );
   const productImages = currentProduct
     ? currentProduct.images?.length
       ? currentProduct.images
@@ -168,6 +171,10 @@ export default function ShopSinglePage() {
     );
     setAdded(true);
     setTimeout(() => setAdded(false), 1800);
+  };
+
+  const toggleProductWishlist = (product) => {
+    if (product) dispatch(toggleWishlist(product));
   };
 
   const decreaseCartQuantity = () => {
@@ -378,7 +385,7 @@ export default function ShopSinglePage() {
           <div className="mb-6 flex gap-[22px]">
             <button
               type="button"
-              onClick={() => setWished((w) => !w)}
+              onClick={() => toggleProductWishlist(currentProduct)}
               aria-pressed={wished}
               className={`inline-flex items-center gap-[7px] border-b border-[#1c1c1c] pb-[3px] text-[11px] uppercase tracking-[0.02em] ${focus}`}
             >
@@ -574,12 +581,12 @@ export default function ShopSinglePage() {
                     <span className="capitalize">{product.category}</span>
                     <button
                       type="button"
-                      aria-label={relatedWished[product.id] ? "Remove from wishlist" : "Add to wishlist"}
-                      aria-pressed={!!relatedWished[product.id]}
-                      onClick={() => setRelatedWished((w) => ({ ...w, [product.id]: !w[product.id] }))}
+                      aria-label={wishlist.some((item) => item.id === product.id) ? "Remove from wishlist" : "Add to wishlist"}
+                      aria-pressed={wishlist.some((item) => item.id === product.id)}
+                      onClick={() => toggleProductWishlist(product)}
                       className={`grid h-7 w-7 place-items-center text-[#8a8a8a] hover:text-[#1c1c1c] ${focus}`}
                     >
-                      <HeartIcon filled={relatedWished[product.id]} />
+                      <HeartIcon filled={wishlist.some((item) => item.id === product.id)} />
                     </button>
                   </div>
                   <Link

@@ -2,7 +2,8 @@ import { Link, useNavigate } from "react-router";
 import Image from "../common/Image";
 import navbardata from "../../api/navbardata.json";
 import { AiOutlineClose } from "react-icons/ai";
-import { useState, useEffect } from "react";
+import axios from "axios";
+import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../firebase.config";
@@ -10,8 +11,14 @@ import { auth } from "../../firebase.config";
 const Header = () => {
   const [activeMenu, setActiveMenu] = useState(false);
   const [user, setUser] = useState(null);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const searchInputRef = useRef(null);
 
   const cart = useSelector((state) => state.cart.products);
+  const wishlist = useSelector((state) => state.wishlist.products);
   const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
   const navigate = useNavigate();
 
@@ -23,12 +30,49 @@ const Header = () => {
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+    if (searchOpen) searchInputRef.current?.focus();
+  }, [searchOpen]);
+
+  useEffect(() => {
+    const query = searchQuery.trim();
+    if (!searchOpen || !query) {
+      setSearchResults([]);
+      setSearchLoading(false);
+      return;
+    }
+
+    const controller = new AbortController();
+    const timeout = setTimeout(async () => {
+      setSearchLoading(true);
+      try {
+        const response = await axios.get(
+          "https://dummyjson.com/products/search",
+          { params: { q: query, limit: 6 }, signal: controller.signal }
+        );
+        setSearchResults(response.data.products ?? []);
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          console.error("Unable to search products", error);
+          setSearchResults([]);
+        }
+      } finally {
+        if (!controller.signal.aborted) setSearchLoading(false);
+      }
+    }, 250);
+
+    return () => {
+      clearTimeout(timeout);
+      controller.abort();
+    };
+  }, [searchOpen, searchQuery]);
+
   const handleCart = () => {
     navigate("/cart");
   };
 
   return (
-    <header className="pt-4 pb-4 lg:pt-7.25 lg:pb-7">
+    <header className="relative pt-4 pb-4 lg:pt-7.25 lg:pb-7">
       <nav>
         <div className="container">
           <div className="flex flex-col lg:flex-row">
@@ -49,33 +93,90 @@ const Header = () => {
               ))}
             </ul>
 
-            <div className="ml-0 flex gap-0 lg:ml-auto lg:gap-8">
-              {/* search */}
-              <button className="hidden lg:block">
-                <svg
-                  width="21"
-                  height="20"
-                  viewBox="0 0 21 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <g clipPath="url(#clip0_6_7)">
-                    <path
-                      d="M8.82291 0C3.95809 0 0 3.95121 0 8.80758C0 13.6642 3.95809 17.6152 8.82291 17.6152C13.688 17.6152 17.6458 13.6642 17.6458 8.80758C17.6458 3.95121 13.688 0 8.82291 0ZM8.82291 15.9892C4.85613 15.9892 1.62885 12.7675 1.62885 8.80762C1.62885 4.84773 4.85613 1.62602 8.82291 1.62602C12.7897 1.62602 16.017 4.84769 16.017 8.80758C16.017 12.7675 12.7897 15.9892 8.82291 15.9892Z"
-                      fill="#222222"
-                    />
-                    <path
-                      d="M19.7962 18.6122L15.1268 13.9509C14.8086 13.6333 14.2934 13.6333 13.9752 13.9509C13.657 14.2683 13.657 14.7832 13.9752 15.1005L18.6446 19.7618C18.8036 19.9206 19.0119 20 19.2204 20C19.4286 20 19.6371 19.9206 19.7962 19.7618C20.1143 19.4444 20.1143 18.9295 19.7962 18.6122Z"
-                      fill="#222222"
-                    />
-                  </g>
-                  <defs>
-                    <clipPath id="clip0_6_7">
-                      <rect width="20.0348" height="20" fill="white" />
-                    </clipPath>
-                  </defs>
-                </svg>
-              </button>
+            <div className="ml-0 flex items-center gap-0 lg:ml-auto lg:gap-8">
+              {/* product search */}
+              <div className="relative z-50 hidden w-40 lg:block xl:w-48">
+                <div className="relative">
+                  <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-[#767676]">
+                    <svg width="16" height="16" viewBox="0 0 21 20" fill="none" aria-hidden="true">
+                      <circle cx="8.8" cy="8.8" r="7.2" stroke="currentColor" strokeWidth="1.6" />
+                      <path d="m14 14 5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                    </svg>
+                  </span>
+                  <input
+                    ref={searchInputRef}
+                    type="search"
+                    value={searchQuery}
+                    onFocus={() => setSearchOpen(true)}
+                    onChange={(event) => {
+                      setSearchQuery(event.target.value);
+                      setSearchOpen(true);
+                    }}
+                    onKeyDown={(event) => {
+                      if (event.key === "Escape") setSearchOpen(false);
+                    }}
+                    placeholder="Search products"
+                    aria-label="Search products"
+                    aria-expanded={searchOpen}
+                    aria-controls="header-product-search"
+                    className="h-10 w-full border border-[#e2e2e2] bg-white pr-9 pl-9 text-xs outline-none transition-colors placeholder:text-[#999] focus:border-[#222]"
+                  />
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSearchOpen(false);
+                        setSearchQuery("");
+                      }}
+                      aria-label="Clear product search"
+                      className="absolute top-1/2 right-2 grid size-6 -translate-y-1/2 place-items-center text-[#767676] hover:text-[#222]"
+                    >
+                      <AiOutlineClose size={14} />
+                    </button>
+                  )}
+                </div>
+                {searchOpen && searchQuery.trim() && (
+                  <div
+                    id="header-product-search"
+                    role="search"
+                    className="absolute top-full right-0 mt-2 w-[min(360px,calc(100vw-32px))] border border-[#e2e2e2] bg-white p-3 shadow-xl"
+                  >
+                    <div className="max-h-80 overflow-y-auto" aria-live="polite">
+                      {searchLoading ? (
+                        <p className="px-2 py-4 text-xs text-[#767676]">Searching...</p>
+                      ) : searchResults.length > 0 ? (
+                        <ul>
+                          {searchResults.map((product) => (
+                            <li key={product.id}>
+                              <Link
+                                to={`/shopsinglepage/${product.id}`}
+                                onClick={() => {
+                                  setSearchOpen(false);
+                                  setSearchQuery("");
+                                }}
+                                className="flex items-center gap-3 border-b border-[#f0f0f0] p-2 last:border-b-0 hover:bg-[#f7f7f7]"
+                              >
+                                <img
+                                  src={product.thumbnail}
+                                  alt=""
+                                  className="size-12 shrink-0 bg-[#f2f2f2] object-contain"
+                                />
+                                <span className="min-w-0 flex-1">
+                                  <span className="block truncate text-xs text-[#222]">{product.title}</span>
+                                  <span className="mt-1 block text-[10px] capitalize text-[#767676]">{product.category}</span>
+                                </span>
+                                <span className="shrink-0 text-xs font-medium text-[#222]">${product.price}</span>
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="px-2 py-4 text-xs text-[#767676]">No products found.</p>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
 
               {/* user: profile image if logged in, otherwise user icon */}
               {user ? (
@@ -141,7 +242,12 @@ const Header = () => {
               )}
 
               {/* wishlist */}
-              <button className="hidden lg:block">
+              <Link
+                to="/wishlist"
+                aria-label={`Wishlist${wishlist.length ? `, ${wishlist.length} items` : ""}`}
+                title="Wishlist"
+                className="hidden lg:block"
+              >
                 <svg
                   width="21"
                   height="20"
@@ -161,7 +267,7 @@ const Header = () => {
                     </clipPath>
                   </defs>
                 </svg>
-              </button>
+              </Link>
 
               {/* cart */}
               <div className="absolute top-4 right-3.75 lg:relative lg:top-auto lg:right-auto">
