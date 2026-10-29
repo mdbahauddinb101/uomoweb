@@ -2,14 +2,26 @@ import { Link, useNavigate } from "react-router";
 import Image from "../common/Image";
 import navbardata from "../../api/navbardata.json";
 import { AiOutlineClose } from "react-icons/ai";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../../firebase.config";
 
 const Header = () => {
   const [activeMenu, setActiveMenu] = useState(false);
-  let cart = useSelector((state) => state.cart.products);
+  const [user, setUser] = useState(null);
+
+  const cart = useSelector((state) => state.cart.products);
   const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
-  let navigate = useNavigate();
+  const navigate = useNavigate();
+
+  // Listen to login / logout
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
 
   const handleCart = () => {
     navigate("/cart");
@@ -38,6 +50,7 @@ const Header = () => {
             </ul>
 
             <div className="ml-0 flex gap-0 lg:ml-auto lg:gap-8">
+              {/* search */}
               <button className="hidden lg:block">
                 <svg
                   width="21"
@@ -46,7 +59,6 @@ const Header = () => {
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  {/* Fixed clip-path to clipPath */}
                   <g clipPath="url(#clip0_6_7)">
                     <path
                       d="M8.82291 0C3.95809 0 0 3.95121 0 8.80758C0 13.6642 3.95809 17.6152 8.82291 17.6152C13.688 17.6152 17.6458 13.6642 17.6458 8.80758C17.6458 3.95121 13.688 0 8.82291 0ZM8.82291 15.9892C4.85613 15.9892 1.62885 12.7675 1.62885 8.80762C1.62885 4.84773 4.85613 1.62602 8.82291 1.62602C12.7897 1.62602 16.017 4.84769 16.017 8.80758C16.017 12.7675 12.7897 15.9892 8.82291 15.9892Z"
@@ -64,34 +76,71 @@ const Header = () => {
                   </defs>
                 </svg>
               </button>
-              <Link to="/login">
-              <button className="hidden lg:block cursor-pointer">
-                <svg
-                  width="21"
-                  height="20"
-                  viewBox="0 0 21 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <g clipPath="url(#clip0_6_29)">
-                    <path
-                      d="M10.0175 11.2652C3.99775 11.2652 0.682495 14.108 0.682495 19.2701C0.682495 19.6732 1.00982 20 1.41369 20H18.6212C19.0251 20 19.3524 19.6732 19.3524 19.2701C19.3524 14.1083 16.0372 11.2652 10.0175 11.2652ZM2.17149 18.5402C2.4591 14.6805 5.09505 12.7251 10.0175 12.7251C14.9399 12.7251 17.5759 14.6805 17.8637 18.5402H2.17149Z"
-                      fill="#222222"
-                    />
-                    <path
-                      d="M10.0174 0C7.25222 0 5.16711 2.12336 5.16711 4.93895C5.16711 7.83699 7.34292 10.1944 10.0174 10.1944C12.6918 10.1944 14.8676 7.83699 14.8676 4.93918C14.8676 2.12336 12.7825 0 10.0174 0ZM10.0174 8.7348C8.14917 8.7348 6.6295 7.03211 6.6295 4.93918C6.6295 2.92313 8.05436 1.45984 10.0174 1.45984C11.949 1.45984 13.4053 2.95547 13.4053 4.93918C13.4053 7.03211 11.8856 8.7348 10.0174 8.7348Z"
-                      fill="#222222"
-                    />
-                  </g>
-                  <defs>
-                    <clipPath id="clip0_6_29">
-                      <rect width="20.0348" height="20" fill="white" />
-                    </clipPath>
-                  </defs>
-                </svg>
-              </button>
-              </Link>
 
+              {/* user: profile image if logged in, otherwise user icon */}
+              {user ? (
+                <button
+                  onClick={() => navigate("/profile")}
+                  className="hidden cursor-pointer lg:block"
+                >
+                  {user.photoURL ? (
+                    <img
+                      src={user.photoURL}
+                      alt={user.displayName || "Profile"}
+                      referrerPolicy="no-referrer"
+                      className="h-6 w-6 rounded-full object-cover"
+                    />
+                  ) : (
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
+                      <circle cx="12" cy="8" r="3.5" fill="currentColor" />
+                      <path
+                        d="M6 18.5C6.8 15.8 9.2 14 12 14C14.8 14 17.2 15.8 18 18.5"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  )}
+                </button>
+              ) : (
+                <button
+                  onClick={() => navigate("/login")}
+                  className="hidden cursor-pointer lg:block"
+                >
+                  <svg
+                    width="21"
+                    height="20"
+                    viewBox="0 0 21 20"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <g clipPath="url(#clip0_6_29)">
+                      <path
+                        d="M10.0175 11.2652C3.99775 11.2652 0.682495 14.108 0.682495 19.2701C0.682495 19.6732 1.00982 20 1.41369 20H18.6212C19.0251 20 19.3524 19.6732 19.3524 19.2701C19.3524 14.1083 16.0372 11.2652 10.0175 11.2652ZM2.17149 18.5402C2.4591 14.6805 5.09505 12.7251 10.0175 12.7251C14.9399 12.7251 17.5759 14.6805 17.8637 18.5402H2.17149Z"
+                        fill="#222222"
+                      />
+                      <path
+                        d="M10.0174 0C7.25222 0 5.16711 2.12336 5.16711 4.93895C5.16711 7.83699 7.34292 10.1944 10.0174 10.1944C12.6918 10.1944 14.8676 7.83699 14.8676 4.93918C14.8676 2.12336 12.7825 0 10.0174 0ZM10.0174 8.7348C8.14917 8.7348 6.6295 7.03211 6.6295 4.93918C6.6295 2.92313 8.05436 1.45984 10.0174 1.45984C11.949 1.45984 13.4053 2.95547 13.4053 4.93918C13.4053 7.03211 11.8856 8.7348 10.0174 8.7348Z"
+                        fill="#222222"
+                      />
+                    </g>
+                    <defs>
+                      <clipPath id="clip0_6_29">
+                        <rect width="20.0348" height="20" fill="white" />
+                      </clipPath>
+                    </defs>
+                  </svg>
+                </button>
+              )}
+
+              {/* wishlist */}
               <button className="hidden lg:block">
                 <svg
                   width="21"
@@ -113,7 +162,8 @@ const Header = () => {
                   </defs>
                 </svg>
               </button>
-              {/* cart...................... */}
+
+              {/* cart */}
               <div className="absolute top-4 right-3.75 lg:relative lg:top-auto lg:right-auto">
                 <button onClick={handleCart} className="relative cursor-pointer">
                   <svg
@@ -129,11 +179,12 @@ const Header = () => {
                     />
                   </svg>
                   <div className="absolute -right-0.75 -bottom-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#B9A16B] text-xs font-bold text-white">
-                {totalItems}
+                    {totalItems}
                   </div>
                 </button>
               </div>
-              {/* cart....................... */}
+
+              {/* mobile menu button */}
               <button
                 onClick={() => setActiveMenu(!activeMenu)}
                 className="absolute top-6 left-3.75 sm:block lg:hidden"
@@ -168,7 +219,27 @@ const Header = () => {
                       </Link>
                     </li>
                   ))}
+
+                  {/* login / profile link inside mobile menu */}
+                  <li className="flex items-center justify-center gap-2 p-4 text-sm leading-6 font-medium text-white">
+                    <Link
+                      to={user ? "/profile" : "/login"}
+                      onClick={() => setActiveMenu(false)}
+                      className="flex items-center gap-2"
+                    >
+                      {user?.photoURL && (
+                        <img
+                          src={user.photoURL}
+                          alt={user.displayName || "Profile"}
+                          referrerPolicy="no-referrer"
+                          className="h-6 w-6 rounded-full object-cover"
+                        />
+                      )}
+                      {user ? user.displayName || "Profile" : "Login"}
+                    </Link>
+                  </li>
                 </ul>
+
                 <button
                   onClick={() => setActiveMenu(false)}
                   className="absolute top-10 right-4"

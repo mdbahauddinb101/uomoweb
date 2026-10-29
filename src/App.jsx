@@ -7,6 +7,8 @@ import ShopSingle from "./pages/ShopSingle";
 import CartPage from "./pages/CartPage";
 import Login from "./pages/Login";
 import Ragister from "./pages/Ragister";
+import ForgotPassword from "./pages/ForgotPassword";
+import Profile from "./pages/Profile";
 
 
 
@@ -23,6 +25,9 @@ const router = createBrowserRouter([
         { path: "/cart", Component: CartPage },
           { path: "/login", Component: Login },
             { path: "/ragister", Component: Ragister },
+             { path: "/passforgot", Component: ForgotPassword },
+              { path: "/profile", Component: Profile },
+            
        
     
       
