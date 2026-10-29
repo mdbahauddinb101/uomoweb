@@ -2,6 +2,10 @@ import { useMemo, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addproduct, filterproduct  } from "../../slices/productSlice";
 import { SlidersHorizontal } from "lucide-react";
+import Price from "../common/Price";
+import { useLocalization } from "../../localization/LocalizationContext";
+import LocalizedText from "../common/LocalizedText";
+import LocalizedInput from "../common/LocalizedInput";
 
 /* ---------- Data (swap with props / API data) ---------- */
 
@@ -84,7 +88,7 @@ function FilterSection({ title, defaultOpen = true, centered = false, children }
         className={`relative flex w-full cursor-pointer items-center ${centered ? "justify-center text-center lg:justify-between lg:text-left" : "justify-between text-left"}`}
       >
         <h3 className="text-base font-medium uppercase text-primary">
-          {title}
+          <LocalizedText text={title} />
         </h3>
         <span className={`text-primary ${centered ? "absolute right-0 lg:static" : ""}`}>
           <ChevronIcon open={open} />
@@ -103,7 +107,12 @@ const thumb =
 
 function PriceRange({ value, onChange }) {
   const [min, max] = value;
-  const pct = (v) => ((v - PRICE_MIN) / (PRICE_MAX - PRICE_MIN)) * 100;
+  const { rate } = useLocalization();
+  const displayRate = rate || 1;
+  const pct = (v) =>
+    ((v - PRICE_MIN * displayRate) /
+      ((PRICE_MAX - PRICE_MIN) * displayRate)) *
+    100;
 
   return (
     <div>
@@ -113,34 +122,49 @@ function PriceRange({ value, onChange }) {
         {/* active range */}
         <div
           className="absolute top-1/2 h-1 -translate-y-1/2 bg-primary"
-          style={{ left: `${pct(min)}%`, width: `${pct(max) - pct(min)}%` }}
+          style={{
+            left: `${pct(min * displayRate)}%`,
+            width: `${pct(max * displayRate) - pct(min * displayRate)}%`,
+          }}
         />
         <input
           type="range"
-          min={PRICE_MIN}
-          max={PRICE_MAX}
-          value={min}
+          min={PRICE_MIN * displayRate}
+          max={PRICE_MAX * displayRate}
+          value={min * displayRate}
+          disabled={!Number.isFinite(rate)}
           aria-label="Minimum price"
-          onChange={(e) => onChange([Math.min(+e.target.value, max - 1), max])}
+          onChange={(e) =>
+            onChange([
+              Math.min(+e.target.value / displayRate, max - 1),
+              max,
+            ])
+          }
           className={`pointer-events-none absolute inset-0 h-full w-full appearance-none bg-transparent ${thumb}`}
         />
-        <input
+        <LocalizedInput
           type="range"
-          min={PRICE_MIN}
-          max={PRICE_MAX}
-          value={max}
+          min={PRICE_MIN * displayRate}
+          max={PRICE_MAX * displayRate}
+          value={max * displayRate}
+          disabled={!Number.isFinite(rate)}
           aria-label="Maximum price"
-          onChange={(e) => onChange([min, Math.max(+e.target.value, min + 1)])}
+          onChange={(e) =>
+            onChange([
+              min,
+              Math.max(+e.target.value / displayRate, min + 1),
+            ])
+          }
           className={`pointer-events-none absolute inset-0 h-full w-full appearance-none bg-transparent ${thumb}`}
         />
       </div>
 
       <div className="mt-2 flex justify-between text-xs text-gray">
         <span>
-          Min Price: <span className="font-medium text-primary">${min}</span>
+          Min Price: <span className="font-medium text-primary"><Price amount={min} /></span>
         </span>
         <span>
-          Max Price: <span className="font-medium text-primary">${max}</span>
+          Max Price: <span className="font-medium text-primary"><Price amount={max} /></span>
         </span>
       </div>
     </div>
@@ -233,7 +257,7 @@ export default function ProductSidebar({ onChange }) {
                     category === name ? "font-medium text-primary" : "text-primary"
                   }`}
                 >
-                  {name}
+                  <LocalizedText text={name} />
                 </button>
               </li>
             ))}
@@ -310,7 +334,9 @@ export default function ProductSidebar({ onChange }) {
                     onChange={() => toggle(brands, setBrands, b.name)}
                     className="size-3.5 shrink-0 cursor-pointer appearance-none border border-gray/50 bg-white checked:border-primary checked:bg-primary checked:shadow-[inset_0_0_0_2px_white]"
                   />
-                  <span className="flex-1 text-primary">{b.name}</span>
+                  <span className="flex-1 text-primary">
+                    <LocalizedText text={b.name} />
+                  </span>
                   <span className="text-gray">{b.count}</span>
                 </label>
               </li>

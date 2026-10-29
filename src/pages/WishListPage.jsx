@@ -6,6 +6,9 @@ import {
   clearWishlist,
   removeFromWishlist,
 } from "../slices/wishlistSlice";
+import syncUserData from "../utils/syncCartUser";
+import Price from "../components/common/Price";
+import LocalizedText from "../components/common/LocalizedText";
 
 const SORTS = [
   { value: "newest", label: "Recently added" },
@@ -30,12 +33,18 @@ const WishlistCard = ({ item, onRemove, onAddToCart, justAdded }) => (
 
     <div className="flex flex-1 flex-col gap-3 p-4">
       <div className="flex-1">
-        <p className="text-sm capitalize text-[#767676]">{item.category}</p>
+        <p className="text-sm capitalize text-[#767676]">
+          <LocalizedText text={item.category} />
+        </p>
         <h3 className="text-primary text-base leading-6 font-medium">
-          <Link to={`/shopsinglepage/${item.id}`}>{item.title}</Link>
+          <Link to={`/shopsinglepage/${item.id}`}>
+            <LocalizedText text={item.title} />
+          </Link>
         </h3>
       </div>
-      <p className="text-lg font-medium">${item.price}</p>
+      <p className="text-lg font-medium">
+        <Price amount={item.price} />
+      </p>
 
       <button
         type="button"
@@ -62,6 +71,8 @@ const WishListPage = () => {
   const [addedId, setAddedId] = useState(null);
 
   const addToCart = (item) => {
+    syncUserData(dispatch);
+
     dispatch(
       addtocart({
         id: item.id,
@@ -96,19 +107,28 @@ const WishListPage = () => {
   return (
     <>
       <section className="bg-[#E4E4E4]">
-        <div className="container py-10 lg:py-16">
+        <div className="container px-4 py-10 sm:px-6 lg:py-16">
           <h1 className="text-primary text-4xl leading-tight font-medium lg:text-6xl">
             Your wishlist
           </h1>
           <p className="mt-4 text-[#767676]">
-            {items.length === 0
-              ? "Nothing saved yet."
-              : `${items.length} ${items.length === 1 ? "item" : "items"} saved, worth $${totalValue.toFixed(2)} together.`}
+            {items.length === 0 ? (
+              "Nothing saved yet."
+            ) : (
+              <>
+                {items.length}{" "}
+                <LocalizedText text={items.length === 1 ? "item" : "items"} />{" "}
+                saved,
+                {" worth "}
+                <Price amount={totalValue} />
+                {" together."}
+              </>
+            )}
           </p>
         </div>
       </section>
 
-      <main className="container py-10 lg:py-14">
+      <main className="container px-4 py-10 sm:px-6 lg:py-14">
         {items.length === 0 ? (
           <div className="flex flex-col items-center gap-5 py-16 text-center">
             <span className="text-6xl" aria-hidden="true">
@@ -134,7 +154,7 @@ const WishListPage = () => {
                 >
                   {SORTS.map(({ value, label }) => (
                     <option key={value} value={value}>
-                      {label}
+                      <LocalizedText text={label} />
                     </option>
                   ))}
                 </select>

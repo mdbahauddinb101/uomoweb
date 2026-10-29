@@ -4,6 +4,7 @@ import { sendPasswordResetEmail } from "firebase/auth";
 import toast, { Toaster } from "react-hot-toast";
 import { auth } from "../firebase.config";
 import { ref, set } from "firebase/database";
+import LocalizedInput from "../components/common/LocalizedInput";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -82,7 +83,7 @@ sendPasswordResetEmail(auth , email)
               >
                 Email address
               </label>
-              <input
+              <LocalizedInput
                 id="email"
                 type="email"
                 placeholder="you@example.com"

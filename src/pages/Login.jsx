@@ -1,6 +1,5 @@
-import {} from "firebase/auth";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
@@ -8,6 +7,7 @@ import {
 } from "firebase/auth";
 import { auth, db } from "../firebase.config";
 import toast, { Toaster } from "react-hot-toast";
+import LocalizedInput from "../components/common/LocalizedInput";
 import { ref, set } from "firebase/database";
 
 export default function Login() {
@@ -15,21 +15,18 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const provider = new GoogleAuthProvider();
   const navigate = useNavigate();
+  const location = useLocation();
+  const returnTo = location.state?.from || "/";
 
   const handleLogin = (e) => {
     e.preventDefault();
 
     signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        
-    toast.success("Signin Successfully");
-           navigate("/")
+      .then(() => {
+        toast.success("Signin Successfully");
+        navigate(returnTo, { replace: true });
       })
-      
-      .catch((error) => {
-        const errorcode = error.code;
+      .catch(() => {
         toast.error("something went wrong");
       });
   };
@@ -44,11 +41,10 @@ export default function Login() {
         });
       }).then(() => {
      toast.success("Google Login Successfully");
-     navigate("/")
+     navigate(returnTo, { replace: true })
 })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
+      .catch(() => {
+        toast.error("Google login failed");
       });
   };
 
@@ -95,7 +91,7 @@ export default function Login() {
           </button>
 
           <form onSubmit={handleLogin} className="flex flex-col gap-4">
-            <input
+            <LocalizedInput
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -103,7 +99,7 @@ export default function Login() {
               required
               className="rounded border px-3 py-2"
             />
-            <input
+            <LocalizedInput
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

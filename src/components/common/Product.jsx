@@ -3,6 +3,9 @@ import Image from "./Image"
 import { useDispatch, useSelector } from "react-redux"
 import { Link } from "react-router";
 import { toggleWishlist } from "../../slices/wishlistSlice";
+import syncUserData from "../../utils/syncCartUser";
+import Price from "./Price";
+import LocalizedText from "./LocalizedText";
 
 
 
@@ -13,6 +16,8 @@ const Product = ({item}) => {
   const wished = wishlist.some((product) => product.id === item.id);
 
   const handleAddtoCart = (item) => {
+    syncUserData(dispatch);
+
     dispatch(addtocart({
       id: item.id,
       title: item.title,
@@ -28,10 +33,15 @@ const Product = ({item}) => {
         <Image className="w-full" src={item.thumbnail} alt="product1"/>
         <div className="mt-3.5">
             <div className="flex justify-between mb-2.5">
-            <h4 className="text-sm text-gray font-normal capitalize">{item.category}</h4>
+            <h4 className="text-sm text-gray font-normal capitalize">
+              <LocalizedText text={item.category} />
+            </h4>
             <button
               type="button"
-              onClick={() => dispatch(toggleWishlist(item))}
+              onClick={() => {
+                syncUserData(dispatch);
+                dispatch(toggleWishlist(item));
+              }}
               aria-label={wished ? `Remove ${item.title} from wishlist` : `Add ${item.title} to wishlist`}
               aria-pressed={wished}
             >
@@ -50,10 +60,12 @@ const Product = ({item}) => {
             </div>
             <h3 className="text-base text-primary font-normal mb-2.5">
               <Link to={`/shopsinglepage/${item.id}`} className="hover:text-gray">
-                {item.title}
+                <LocalizedText text={item.title} />
               </Link>
             </h3>
-            <h5 className="text-base text-primary font-normal mb-2.5">{item.price}</h5>
+            <h5 className="text-base text-primary font-normal mb-2.5">
+              <Price amount={item.price} />
+            </h5>
         </div>
         <div className="text-center">
         <button onClick={() => handleAddtoCart(item)} className="lg:h-12.5 lg:w-77.5 bg-white text-center font-medium text-sm text-black invisible duration-500 ease-linear  group-hover:visible absolute left-2/4 bottom-25 translate-x-[-50%] cursor-pointer shadow-lg">

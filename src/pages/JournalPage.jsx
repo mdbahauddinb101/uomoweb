@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router";
+import LocalizedText from "../components/common/LocalizedText";
+import LocalizedInput from "../components/common/LocalizedInput";
 
 /* Jost matches the shop pages. Keep this import, or load the font
    in index.html / tailwind.config.js instead. */
@@ -65,11 +67,17 @@ function PostCard({ post }) {
           <Placeholder seed={post.id} />
         </div>
       </a>
-      <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.06em]">{post.category}</p>
+      <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.06em]">
+        <LocalizedText text={post.category} />
+      </p>
       <h3 className="mb-2 text-[19px] font-normal leading-snug">
-        <a href={`#post-${post.id}`} className="hover:underline">{post.title}</a>
+        <a href={`#post-${post.id}`} className="hover:underline">
+          <LocalizedText text={post.title} />
+        </a>
       </h3>
-      <p className="mb-3 line-clamp-2 text-[13px] leading-relaxed text-[#666]">{post.excerpt}</p>
+      <p className="mb-3 line-clamp-2 text-[13px] leading-relaxed text-[#666]">
+        <LocalizedText text={post.excerpt} />
+      </p>
       <Meta post={post} />
     </article>
   );
@@ -121,7 +129,13 @@ export default function JournalPage() {
                 <Link to="/journal" className="hover:text-[#1c1c1c]">Journal</Link>
                 <span aria-hidden="true">/</span>
                 <span aria-current="page" className="text-[#1c1c1c]">
-                  {query.trim() ? `Search: ${query.trim()}` : category}
+                  {query.trim() ? (
+                    <>
+                      <LocalizedText text="Search:" /> {query.trim()}
+                    </>
+                  ) : (
+                    <LocalizedText text={category} />
+                  )}
                 </span>
               </>
             )}
@@ -148,7 +162,7 @@ export default function JournalPage() {
                   category === c ? "border-[#1c1c1c] text-[#1c1c1c]" : "border-transparent text-[#8a8a8a] hover:text-[#1c1c1c]"
                 }`}
               >
-                {c}
+                <LocalizedText text={c} />
               </button>
             ))}
           </div>
@@ -156,7 +170,7 @@ export default function JournalPage() {
           <label className="relative block md:w-64">
             <span className="sr-only">Search articles</span>
             <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#8a8a8a]"><Search /></span>
-            <input
+            <LocalizedInput
               type="search"
               value={query}
               onChange={(e) => { setQuery(e.target.value); setVisible(PAGE_SIZE); }}
@@ -176,12 +190,17 @@ export default function JournalPage() {
             </a>
             <div>
               <p className="mb-3 text-[11px] font-medium uppercase tracking-[0.06em] text-[#d9232d]">
-                Latest &nbsp;/&nbsp; {featured.category}
+                <LocalizedText text="Latest" /> &nbsp;/&nbsp;{" "}
+                <LocalizedText text={featured.category} />
               </p>
               <h2 className="mb-4 text-[28px] font-light leading-tight tracking-[-0.01em] sm:text-[34px]">
-                <a href={`#post-${featured.id}`} className="hover:underline">{featured.title}</a>
+                <a href={`#post-${featured.id}`} className="hover:underline">
+                  <LocalizedText text={featured.title} />
+                </a>
               </h2>
-              <p className="mb-5 max-w-md text-[14px] leading-relaxed text-[#666]">{featured.excerpt}</p>
+              <p className="mb-5 max-w-md text-[14px] leading-relaxed text-[#666]">
+                <LocalizedText text={featured.excerpt} />
+              </p>
               <p className="mb-6 text-[12px] text-[#1c1c1c]">By {featured.author}</p>
               <Meta post={featured} className="mb-6" />
               <a
@@ -199,7 +218,12 @@ export default function JournalPage() {
           <main>
             <p className="mb-6 text-[13px] text-[#666]" aria-live="polite">
               {filtered.length} {filtered.length === 1 ? "article" : "articles"}
-              {category !== "All" && <> in {category}</>}
+              {category !== "All" && (
+                <>
+                  {" in "}
+                  <LocalizedText text={category} />
+                </>
+              )}
               {query.trim() && <> matching “{query.trim()}”</>}
             </p>
 
@@ -244,7 +268,9 @@ export default function JournalPage() {
                   <li key={p.id} className="flex gap-4">
                     <span className="w-5 flex-none text-[22px] font-light leading-none text-[#bbb]">{i + 1}</span>
                     <div>
-                      <a href={`#post-${p.id}`} className="block text-[14px] leading-snug hover:underline">{p.title}</a>
+                      <a href={`#post-${p.id}`} className="block text-[14px] leading-snug hover:underline">
+                        <LocalizedText text={p.title} />
+                      </a>
                       <Meta post={p} className="mt-1" />
                     </div>
                   </li>
@@ -262,7 +288,7 @@ export default function JournalPage() {
                     onClick={() => { setQuery(t); setCategory("All"); setVisible(PAGE_SIZE); }}
                     className={`border border-[#e2e2e2] px-3 py-1 text-[12px] text-[#666] transition-colors hover:border-[#1c1c1c] hover:text-[#1c1c1c] ${focus}`}
                   >
-                    {t}
+                    <LocalizedText text={t} />
                   </button>
                 ))}
               </div>
@@ -276,7 +302,7 @@ export default function JournalPage() {
               ) : (
                 <form onSubmit={subscribe} noValidate>
                   <label className="sr-only" htmlFor="journal-email">Email address</label>
-                  <input
+                  <LocalizedInput
                     id="journal-email"
                     type="email"
                     value={email}

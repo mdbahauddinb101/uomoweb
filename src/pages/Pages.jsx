@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 // Adjust these two paths to wherever Header.jsx and Footer.jsx live in your project
+import LocalizedText from "../components/common/LocalizedText";
+import LocalizedInput from "../components/common/LocalizedInput";
 
 const POSTS = [
   {
@@ -132,7 +134,7 @@ const Art = ({ post, big }) => (
 
 const Meta = ({ post }) => (
   <p className="text-sm text-[#767676]">
-    {post.category} · {post.date} · {post.read} min read
+    <LocalizedText text={post.category} /> · {post.date} · {post.read} min read
   </p>
 );
 
@@ -147,8 +149,12 @@ const PostCard = ({ post, onOpen }) => (
     </button>
     <div className="flex flex-1 flex-col gap-3 p-5">
       <Meta post={post} />
-      <h3 className="text-primary text-xl leading-7 font-medium">{post.title}</h3>
-      <p className="text-sm leading-6 text-[#767676]">{post.excerpt}</p>
+      <h3 className="text-primary text-xl leading-7 font-medium">
+        <LocalizedText text={post.title} />
+      </h3>
+      <p className="text-sm leading-6 text-[#767676]">
+        <LocalizedText text={post.excerpt} />
+      </p>
       <button
         onClick={() => onOpen(post)}
         className="mt-auto w-fit cursor-pointer text-sm font-medium text-[#222222] underline underline-offset-4"
@@ -191,11 +197,15 @@ const Reader = ({ post, onClose }) => {
               ×
             </button>
           </div>
-          <h2 className="text-primary mt-3 text-3xl leading-10 font-medium">{post.title}</h2>
+          <h2 className="text-primary mt-3 text-3xl leading-10 font-medium">
+            <LocalizedText text={post.title} />
+          </h2>
           <p className="mt-2 text-sm text-[#767676]">By {post.author}</p>
           <div className="mt-6 flex flex-col gap-4 leading-7 text-[#222222]">
             {post.body.map((para, i) => (
-              <p key={i}>{para}</p>
+              <p key={i}>
+                <LocalizedText text={para} />
+              </p>
             ))}
           </div>
         </div>
@@ -223,7 +233,7 @@ const Pages = () => {
   
 
       <section className="bg-[#E4E4E4]">
-        <div className="container py-12 lg:py-20">
+        <div className="container px-4 py-12 sm:px-6 lg:py-20">
           <h1 className="text-primary max-w-2xl text-5xl leading-[1.05] font-medium lg:text-7xl">
             The clothing journal
           </h1>
@@ -234,7 +244,7 @@ const Pages = () => {
         </div>
       </section>
 
-      <main className="container py-10 lg:py-14">
+      <main className="container px-4 py-10 sm:px-6 lg:py-14">
         <div className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-wrap gap-2" role="group" aria-label="Filter articles">
             {CATEGORIES.map((c) => (
@@ -248,11 +258,11 @@ const Pages = () => {
                     : "border-[#CFCDCD] text-[#222222]"
                 }`}
               >
-                {c}
+                <LocalizedText text={c} />
               </button>
             ))}
           </div>
-          <input
+          <LocalizedInput
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -279,9 +289,11 @@ const Pages = () => {
               <div className="flex flex-col justify-center gap-4 p-6 lg:p-10">
                 <Meta post={featured} />
                 <h2 className="text-primary text-3xl leading-10 font-medium">
-                  {featured.title}
+                  <LocalizedText text={featured.title} />
                 </h2>
-                <p className="leading-7 text-[#767676]">{featured.excerpt}</p>
+                <p className="leading-7 text-[#767676]">
+                  <LocalizedText text={featured.excerpt} />
+                </p>
                 <button
                   onClick={() => setOpen(featured)}
                   className="w-fit cursor-pointer bg-[#222222] px-7 py-3 text-sm font-medium text-white"

@@ -1,5 +1,8 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router";
+import Price from "../components/common/Price";
+import LocalizedText from "../components/common/LocalizedText";
+import { useLocalization } from "../localization/LocalizationContext";
 
 /* Jost matches the single product page. Keep this import, or load the font
    in index.html / tailwind.config.js instead. */
@@ -83,7 +86,7 @@ const GridIcon = ({ cols }) => (
 const focus = "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1c1c1c]";
 
 /* ---------- Filter panel (used in sidebar + mobile drawer) ---------- */
-function FilterPanel({ filters, setFilters, counts }) {
+function FilterPanel({ filters, setFilters, counts, rate }) {
   const toggle = (key, value) =>
     setFilters((f) => ({
       ...f,
@@ -92,7 +95,9 @@ function FilterPanel({ filters, setFilters, counts }) {
 
   const Group = ({ title, children }) => (
     <fieldset className="border-b border-[#e2e2e2] py-6 first:pt-0">
-      <legend className="mb-3.5 text-[11px] font-medium uppercase tracking-[0.06em]">{title}</legend>
+      <legend className="mb-3.5 text-[11px] font-medium uppercase tracking-[0.06em]">
+        <LocalizedText text={title} />
+      </legend>
       {children}
     </fieldset>
   );
@@ -111,7 +116,7 @@ function FilterPanel({ filters, setFilters, counts }) {
                   filters.category === c ? "font-medium text-[#1c1c1c]" : "text-[#666] hover:text-[#1c1c1c]"
                 }`}
               >
-                <span>{c}</span>
+                <span><LocalizedText text={c} /></span>
                 <span className="text-[11px] text-[#8a8a8a]">{counts[c]}</span>
               </button>
             </li>
@@ -164,17 +169,25 @@ function FilterPanel({ filters, setFilters, counts }) {
       <Group title="Price">
         <input
           type="range"
-          min="10"
-          max={MAX_PRICE}
-          step="5"
-          value={filters.maxPrice}
-          onChange={(e) => setFilters((f) => ({ ...f, maxPrice: Number(e.target.value) }))}
+          min={10 * (rate || 1)}
+          max={MAX_PRICE * (rate || 1)}
+          step={5 * (rate || 1)}
+          value={filters.maxPrice * (rate || 1)}
+          disabled={!Number.isFinite(rate)}
+          onChange={(e) =>
+            setFilters((f) => ({
+              ...f,
+              maxPrice: Number(e.target.value) / (rate || 1),
+            }))
+          }
           aria-label="Maximum price"
           className="w-full accent-[#1c1c1c]"
         />
         <div className="mt-2 flex justify-between text-xs text-[#666]">
-          <span>$10</span>
-          <span className="font-medium text-[#1c1c1c]">Up to ${filters.maxPrice}</span>
+          <span><Price amount={10} /></span>
+          <span className="font-medium text-[#1c1c1c]">
+            Up to <Price amount={filters.maxPrice} />
+          </span>
         </div>
       </Group>
     </div>
@@ -192,7 +205,7 @@ function ProductCard({ p, wished, onWish, onAdd, added }) {
 
         {p.tag && (
           <span className={`absolute left-3 top-3 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.06em] ${p.tag === "Sale" ? "bg-[#d9232d] text-white" : "bg-white text-[#1c1c1c]"}`}>
-            {p.tag}
+            <LocalizedText text={p.tag} />
           </span>
         )}
 
@@ -217,12 +230,22 @@ function ProductCard({ p, wished, onWish, onAdd, added }) {
 
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-[10px] uppercase tracking-[0.04em] text-[#8a8a8a]">{p.category}</p>
-          <a href={`#product-${p.id}`} className="block truncate text-[13px] hover:underline">{p.name}</a>
+          <p className="text-[10px] uppercase tracking-[0.04em] text-[#8a8a8a]">
+            <LocalizedText text={p.category} />
+          </p>
+          <a href={`#product-${p.id}`} className="block truncate text-[13px] hover:underline">
+            <LocalizedText text={p.name} />
+          </a>
         </div>
         <p className="flex-none text-[13px]">
-          {p.oldPrice && <s className="mr-1.5 text-[#8a8a8a]">${p.oldPrice}</s>}
-          <span className={p.oldPrice ? "text-[#d9232d]" : ""}>${p.price}</span>
+          {p.oldPrice && (
+            <s className="mr-1.5 text-[#8a8a8a]">
+              <Price amount={p.oldPrice} />
+            </s>
+          )}
+          <span className={p.oldPrice ? "text-[#d9232d]" : ""}>
+            <Price amount={p.price} />
+          </span>
         </p>
       </div>
 
@@ -240,6 +263,7 @@ const GRID = { 2: "lg:grid-cols-2", 3: "lg:grid-cols-3", 4: "lg:grid-cols-4" };
 const INITIAL = { category: "All", sizes: [], colors: [], maxPrice: MAX_PRICE };
 
 export default function CollectionPage() {
+  const { rate } = useLocalization();
   const [filters, setFilters] = useState(INITIAL);
   const [sort, setSort] = useState("featured");
   const [cols, setCols] = useState(3);
@@ -280,10 +304,10 @@ export default function CollectionPage() {
   }, [filters, sort]);
 
   const chips = [
-    ...(filters.category !== "All" ? [{ label: filters.category, clear: () => setF((f) => ({ ...f, category: "All" })) }] : []),
-    ...filters.sizes.map((s) => ({ label: `Size ${s}`, clear: () => setF((f) => ({ ...f, sizes: f.sizes.filter((x) => x !== s) })) })),
-    ...filters.colors.map((c) => ({ label: c, clear: () => setF((f) => ({ ...f, colors: f.colors.filter((x) => x !== c) })) })),
-    ...(filters.maxPrice < MAX_PRICE ? [{ label: `Under $${filters.maxPrice}`, clear: () => setF((f) => ({ ...f, maxPrice: MAX_PRICE })) }] : []),
+    ...(filters.category !== "All" ? [{ label: <LocalizedText text={filters.category} />, clear: () => setF((f) => ({ ...f, category: "All" })) }] : []),
+    ...filters.sizes.map((s) => ({ label: <><LocalizedText text="Size" /> {s}</>, clear: () => setF((f) => ({ ...f, sizes: f.sizes.filter((x) => x !== s) })) })),
+    ...filters.colors.map((c) => ({ label: <LocalizedText text={c} />, clear: () => setF((f) => ({ ...f, colors: f.colors.filter((x) => x !== c) })) })),
+    ...(filters.maxPrice < MAX_PRICE ? [{ label: <><LocalizedText text="Under" /> <Price amount={filters.maxPrice} /></>, clear: () => setF((f) => ({ ...f, maxPrice: MAX_PRICE })) }] : []),
   ];
 
   const handleAdd = (id) => {
@@ -306,7 +330,11 @@ export default function CollectionPage() {
             <Link to="/shop" className="hover:text-[#1c1c1c]">Shop</Link>
             <span aria-hidden="true">/</span>
             <span aria-current="page" className="text-[#1c1c1c]">
-              {filters.category === "All" ? "Collection" : filters.category}
+              {filters.category === "All" ? (
+                <LocalizedText text="Collection" />
+              ) : (
+                <LocalizedText text={filters.category} />
+              )}
             </span>
           </nav>
           <h1 className="text-4xl font-light tracking-[-0.01em] sm:text-5xl">Autumn Collection</h1>
@@ -354,7 +382,11 @@ export default function CollectionPage() {
                 onChange={(e) => setSort(e.target.value)}
                 className={`cursor-pointer border border-[#e2e2e2] bg-white py-1.5 pl-2.5 pr-7 text-[12px] ${focus}`}
               >
-                {SORTS.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
+                {SORTS.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    <LocalizedText text={s.label} />
+                  </option>
+                ))}
               </select>
             </label>
           </div>
@@ -364,7 +396,7 @@ export default function CollectionPage() {
           {/* Desktop sidebar */}
           <aside className="hidden lg:block" aria-label="Filters">
             <div className="sticky top-[72px]">
-              <FilterPanel filters={filters} setFilters={setF} counts={counts} />
+              <FilterPanel filters={filters} setFilters={setF} counts={counts} rate={rate} />
             </div>
           </aside>
 
@@ -372,9 +404,9 @@ export default function CollectionPage() {
           <main>
             {chips.length > 0 && (
               <div className="mb-6 flex flex-wrap items-center gap-2">
-                {chips.map((c) => (
+                {chips.map((c, index) => (
                   <button
-                    key={c.label}
+                    key={index}
                     type="button"
                     onClick={c.clear}
                     className={`inline-flex items-center gap-2 border border-[#e2e2e2] px-3 py-1 text-[12px] hover:border-[#1c1c1c] ${focus}`}
@@ -458,7 +490,7 @@ export default function CollectionPage() {
             </button>
           </div>
           <div className="flex-1 overflow-y-auto px-5 py-5">
-            <FilterPanel filters={filters} setFilters={setF} counts={counts} />
+            <FilterPanel filters={filters} setFilters={setF} counts={counts} rate={rate} />
           </div>
           <div className="flex gap-3 border-t border-[#e2e2e2] p-4">
             <button

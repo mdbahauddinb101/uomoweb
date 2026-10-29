@@ -4,6 +4,7 @@ import Title from "../common/Title";
 import trendydata from "../../api/trendydata.json";
 import Product from "../common/Product";
 import axios from "axios";
+import LocalizedText from "../common/LocalizedText";
 
 const TrendyProducts = () => {
   let [activeCategory, setActiveCategory] = useState("ALL");
@@ -48,7 +49,7 @@ const TrendyProducts = () => {
                     : "text-gray hover:text-primary after:w-0 hover:after:w-full"
                 }`}
               >
-                {item.name}
+                <LocalizedText text={item.name} />
               </button>
             </li>
           ))}

@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
 import { auth,db } from "../firebase.config";
 import {
   createUserWithEmailAndPassword,
@@ -8,6 +9,9 @@ import {
 } from "firebase/auth";
 import toast, { Toaster } from "react-hot-toast";
 import { ref, set } from "firebase/database";
+import { mergeGuestCart } from "../slices/cartSlice";
+import { mergeGuestWishlist } from "../slices/wishlistSlice";
+import LocalizedInput from "../components/common/LocalizedInput";
 
 export default function Register() {
   const [name, setName] = useState("");
@@ -15,50 +19,49 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
 
     if (password !== confirmPassword) {
-      alert("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
-    createUserWithEmailAndPassword(auth, email, password).then(
-      (userCredential) => {
-        updateProfile(auth.currentUser, {
-          displayName: name,
-          photoURL: "https://example.com/jane-q-user/profile.jpg",
-        })
-          .then(() => {
-            sendEmailVerification(auth.currentUser).then(() => {
-              const user = userCredential.user;
-              console.log(user);
-              toast.success("Account created Successfully");
-              setLoading(false);
+    setLoading(true);
+    try {
+      const { user } = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(user, { displayName: name });
+      dispatch(mergeGuestCart(user.uid));
+      dispatch(mergeGuestWishlist(user.uid));
+      toast.success("Account created successfully");
+      navigate("/profile", { replace: true });
 
+      try {
+        await sendEmailVerification(user);
+      } catch (error) {
+        console.error("Unable to send email verification:", error);
+        toast.error("Account created, but verification email could not be sent");
+      }
 
-set(ref(db, 'users/' + user.uid), {
-    name: name,
-    email: email,
-   
-  });
-
-
-            });
-          })
-          .catch((error) => {
-            setLoading(false);
-            const errorcode = error.code;
-            if (errorcode.includes("auth/email-already-in-use")) {
-              toast.error("Email already in use");
-            } else {
-              toast.error("something went wrong");
-            }
-          });
-      },
-    );
+      try {
+        await set(ref(db, `users/${user.uid}`), { name, email });
+      } catch (error) {
+        console.error("Unable to save user profile:", error);
+        toast.error("Account created, but profile details could not be saved");
+      }
+    } catch (error) {
+      console.error("Registration failed:", error);
+      toast.error(
+        error.code === "auth/email-already-in-use"
+          ? "Email already in use"
+          : "Unable to create account",
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -68,7 +71,7 @@ set(ref(db, 'users/' + user.uid), {
         <h2 className="mb-6 text-center text-xl font-medium">Register</h2>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <input
+          <LocalizedInput
             type="text"
             placeholder="Full name"
             value={name}
@@ -76,7 +79,7 @@ set(ref(db, 'users/' + user.uid), {
             required
             className="rounded border px-3 py-2"
           />
-          <input
+          <LocalizedInput
             type="email"
             placeholder="Email"
             value={email}
@@ -84,7 +87,7 @@ set(ref(db, 'users/' + user.uid), {
             required
             className="rounded border px-3 py-2"
           />
-          <input
+          <LocalizedInput
             type="password"
             placeholder="Password"
             value={password}
@@ -93,7 +96,7 @@ set(ref(db, 'users/' + user.uid), {
             minLength={6}
             className="rounded border px-3 py-2"
           />
-          <input
+          <LocalizedInput
             type="password"
             placeholder="Confirm password"
             value={confirmPassword}

@@ -6,6 +6,9 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import { addtocart, decrementQuantity } from "../slices/cartSlice";
 import { toggleWishlist } from "../slices/wishlistSlice";
+import syncUserData from "../utils/syncCartUser";
+import Price from "../components/common/Price";
+import LocalizedText from "../components/common/LocalizedText";
 import "swiper/css";
 import "swiper/css/navigation";
 
@@ -158,6 +161,7 @@ export default function ShopSinglePage() {
     .slice(0, 12);
 
   const addToCart = () => {
+    syncUserData(dispatch);
     if (!currentProduct || qty === 0) return;
 
     dispatch(
@@ -174,7 +178,9 @@ export default function ShopSinglePage() {
   };
 
   const toggleProductWishlist = (product) => {
-    if (product) dispatch(toggleWishlist(product));
+    if (!product) return;
+    syncUserData(dispatch);
+    dispatch(toggleWishlist(product));
   };
 
   const decreaseCartQuantity = () => {
@@ -187,6 +193,7 @@ export default function ShopSinglePage() {
   };
 
   const increaseCartQuantity = () => {
+    syncUserData(dispatch);
     if (!currentProduct) return;
 
     const nextQuantity = qty + 1;
@@ -271,7 +278,7 @@ export default function ShopSinglePage() {
               <Link to="/shop" className="hover:underline">Shop</Link>
               <span aria-hidden="true"> / </span>
               <span aria-current="page" className="truncate">
-                {currentProduct?.title ?? "Product"}
+                <LocalizedText text={currentProduct?.title ?? "Product"} />
               </span>
             </nav>
             <div className="flex gap-[18px]">
@@ -285,11 +292,15 @@ export default function ShopSinglePage() {
           </div>
 
           <h1 className="mb-2 text-[25px] font-normal leading-tight tracking-[-0.005em]">
-            {currentProduct?.title ??
-              (relatedLoading ? "Loading product..." : "Product not found")}
+            <LocalizedText
+              text={
+                currentProduct?.title ??
+                (relatedLoading ? "Loading product..." : "Product not found")
+              }
+            />
           </h1>
           <p className="mb-[18px] text-[17px] font-medium">
-            {currentProduct ? `$${currentProduct.price}` : ""}
+            {currentProduct && <Price amount={currentProduct.price} />}
           </p>
 
           <p className="mb-[26px] max-w-[520px] text-xs leading-[1.7]">
@@ -578,7 +589,9 @@ export default function ShopSinglePage() {
                     />
                   </Link>
                   <div className="flex items-center justify-between text-[10px] text-[#8a8a8a]">
-                    <span className="capitalize">{product.category}</span>
+                    <span className="capitalize">
+                      <LocalizedText text={product.category} />
+                    </span>
                     <button
                       type="button"
                       aria-label={wishlist.some((item) => item.id === product.id) ? "Remove from wishlist" : "Add to wishlist"}
@@ -593,9 +606,11 @@ export default function ShopSinglePage() {
                     to={`/shopsinglepage/${product.id}`}
                     className="block text-[11.5px] leading-normal hover:underline"
                   >
-                    {product.title}
+                    <LocalizedText text={product.title} />
                   </Link>
-                  <p className="text-[11.5px]">${product.price}</p>
+                  <p className="text-[11.5px]">
+                    <Price amount={product.price} />
+                  </p>
                 </article>
               </SwiperSlide>
             ))}

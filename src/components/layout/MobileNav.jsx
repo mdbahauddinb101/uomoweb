@@ -1,6 +1,29 @@
 import { Link } from "react-router";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../../firebase.config";
 
 const MobileNav = () => {
+  const [user, setUser] = useState(null);
+  const [authResolved, setAuthResolved] = useState(false);
+  const { products: cart, userId: cartUserId } = useSelector((state) => state.cart);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setAuthResolved(true);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const cartBelongsToCurrentUser =
+    authResolved &&
+    (user ? cartUserId === user.uid : cartUserId === null);
+  const totalItems = cartBelongsToCurrentUser
+    ? cart.reduce((sum, item) => sum + (item.quantity || 1), 0)
+    : 0;
+
   return (
     <section className="fixed w-full bottom-0 z-50">
       <div className="bg-white py-4 block lg:hidden">
@@ -90,7 +113,7 @@ const MobileNav = () => {
             </Link>
           </li>
           <li>
-            <Link to="/Cart">
+            <Link to="/cart">
             <div className="flex flex-col items-center gap-2 relative">
                 
             <svg
@@ -105,7 +128,11 @@ const MobileNav = () => {
                 fill="#222222"
               />
             </svg>
-            <span className="bg-[#B9A16B] rounded-full w-5 h-5 flex items-center justify-center text-white absolute bottom-9 left-4">3</span>
+            {totalItems > 0 && (
+              <span className="absolute bottom-9 left-4 flex h-5 w-5 items-center justify-center rounded-full bg-[#B9A16B] text-white">
+                {totalItems}
+              </span>
+            )}
          <h5>Cart</h5>
         
          </div>

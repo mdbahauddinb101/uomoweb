@@ -1,5 +1,6 @@
 import categorydata from "../../api/categorydata.json";
 import Image from "../common/Image.jsx";
+import LocalizedText from "../common/LocalizedText";
 
 const Category = () => {
   return (
@@ -7,13 +8,10 @@ const Category = () => {
       <div className="container">
         <div className="lg:grid grid-cols-4 lg:gap-7.5">
           {categorydata.map((item) => {
-            // 1. Split the dynamic name by spaces
             const nameParts = item.name ? item.name.split(" ") : [];
-
-            // 2. Isolate the first word for the span, and join the rest back together
             const firstWord = nameParts[0] || "";
             const restOfText = nameParts.slice(1).join(" ");
-
+            // 1. Split the dynamic name by spaces
             return (
               <div
                 key={item.id} // Added missing key prop for React lists
@@ -28,17 +26,19 @@ const Category = () => {
                 <Image src={item.image} alt={item.name} className={`w-full ${item.id === 2 ? "h-80.75" : "h-full"} p-3.75 lg:p-0`} />
                 <div className="absolute bottom-10 left-10">
                   <h2 className="font-joist mb-1.25 text-[14px] leading-6 font-normal">
-                    {item.heading2}
+                    <LocalizedText text={item.heading2} />
                   </h2>
 
                   {/* 3. Render the split pieces here */}
                   <h2 className="font-jost mb-1.25 text-[26px] leading-[100%] ">
-                    <span className="text-primary font-bold block lg:inline pb-2 lg:pb-0">{firstWord}</span>{" "}
-                    {restOfText}
+                    <span className="text-primary font-bold block pb-2 lg:inline lg:pb-0">
+                      <LocalizedText text={firstWord} />
+                    </span>{" "}
+                    <LocalizedText text={restOfText} />
                   </h2>
 
                   <button className="text-primary font-jost after:bg-primary cursor-pointer pb-2 text-[14px] leading-6 font-medium relative after:absolute content-[''] after:bottom-0 after:left-0 after:h-0.5 after:w-12.5">
-                    {item.btn}
+                    <LocalizedText text={item.btn} />
                   </button>
                 </div>
               </div>

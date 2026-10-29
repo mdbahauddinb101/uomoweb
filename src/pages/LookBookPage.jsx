@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import Price from "../components/common/Price";
+import LocalizedText from "../components/common/LocalizedText";
 
 const LOOKS = [
   {
@@ -125,9 +127,12 @@ const LookCard = ({ look, index, saved, onSave, onOpen }) => {
       </button>
       <div className="flex items-start justify-between gap-3 p-4">
         <div>
-          <h3 className="text-primary text-lg leading-6 font-medium">{look.title}</h3>
+          <h3 className="text-primary text-lg leading-6 font-medium">
+            <LocalizedText text={look.title} />
+          </h3>
           <p className="mt-1 text-sm text-[#767676]">
-            {look.mood} · {look.items.length} pieces · ${total(look)}
+            <LocalizedText text={look.mood} /> · {look.items.length}{" "}
+            <LocalizedText text="pieces" /> · <Price amount={total(look)} />
           </p>
         </div>
         <button
@@ -170,7 +175,9 @@ const LookModal = ({ look, saved, onSave, onClose }) => {
         </div>
         <div className="flex flex-col p-6">
           <div className="flex items-start justify-between gap-4">
-            <h3 className="text-primary text-2xl leading-8 font-medium">{look.title}</h3>
+            <h3 className="text-primary text-2xl leading-8 font-medium">
+              <LocalizedText text={look.title} />
+            </h3>
             <button
               onClick={onClose}
               aria-label="Close"
@@ -179,22 +186,25 @@ const LookModal = ({ look, saved, onSave, onClose }) => {
               ×
             </button>
           </div>
-          <p className="mt-3 text-sm leading-6 text-[#767676]">{look.note}</p>
+          <p className="mt-3 text-sm leading-6 text-[#767676]">
+            <LocalizedText text={look.note} />
+          </p>
 
           <ul className="mt-5 divide-y divide-[#CFCDCD] border-y border-[#CFCDCD]">
             {look.items.map(([name, type, price]) => (
               <li key={name} className="flex justify-between py-3 text-sm">
                 <span>
-                  {name} <span className="text-[#767676]">· {type}</span>
+                  <LocalizedText text={name} />{" "}
+                  <span className="text-[#767676]">· <LocalizedText text={type} /></span>
                 </span>
-                <span className="font-medium">${price}</span>
+                <span className="font-medium"><Price amount={price} /></span>
               </li>
             ))}
           </ul>
 
           <div className="mt-4 flex justify-between font-medium">
             <span>Whole look</span>
-            <span>${total(look)}</span>
+            <span><Price amount={total(look)} /></span>
           </div>
 
           <div className="mt-auto flex gap-3 pt-6">
@@ -228,7 +238,7 @@ const LookBookPage = () => {
   return (
     <>
       <section className="bg-[#E4E4E4]">
-        <div className="container grid items-end gap-10 py-12 md:grid-cols-5 lg:py-20">
+        <div className="container grid items-end gap-10 px-4 py-12 sm:px-6 md:grid-cols-5 lg:py-20">
           <div className="md:col-span-3">
             <h1 className="text-primary text-5xl leading-[1.05] font-medium lg:text-7xl">
               Outfits, already put together.
@@ -254,7 +264,7 @@ const LookBookPage = () => {
         </div>
       </section>
 
-      <main id="looks" className="container py-12 lg:py-16">
+      <main id="looks" className="container px-4 py-12 sm:px-6 lg:py-16">
         <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
           <h2 className="text-primary text-3xl leading-10 font-medium">
             This season
@@ -276,7 +286,7 @@ const LookBookPage = () => {
                     : "border-[#CFCDCD] text-[#222222]"
                 }`}
               >
-                {f}
+                <LocalizedText text={f} />
               </button>
             ))}
           </div>

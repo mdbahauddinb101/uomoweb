@@ -1,8 +1,13 @@
-
+import LocalizedText from "./LocalizedText";
 
 const Title = ({name, namebold}) => {
   return (
-    <h2 className="font-normal text-primary text-center text-[35px]">{name} <span className="font-bold">{namebold}</span></h2>
+    <h2 className="font-normal text-primary text-center text-[35px]">
+      <LocalizedText text={name} />{" "}
+      <span className="font-bold">
+        <LocalizedText text={namebold} />
+      </span>
+    </h2>
   )
 }
 

@@ -1,9 +1,28 @@
 import CartItem from "../components/Cart/CartItem";
 import { useSelector } from "react-redux";
-import {  useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
+import { useEffect, useState } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase.config";
+import toast, { Toaster } from "react-hot-toast";
+import Price from "../components/common/Price";
 
 export default function CartPage() {
-  let cartitems = useSelector((state) => state.cart.products);
+  const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const cart = useSelector((state) => state.cart);
+  const cartitems = cart.products;
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setAuthLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   let totallprice = cartitems.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -12,15 +31,36 @@ export default function CartPage() {
 
   let finalBalance = totallprice + 20 + 10;
 
-  let navigate = useNavigate();
-
 const HomepageNavigate = () => {
   navigate("/shop")
 };
 
+  const handleCheckout = () => {
+    if (!user) {
+      navigate("/login", {
+        state: { from: location.pathname },
+      });
+      return;
+    }
+
+    toast.error("Checkout is not available yet.");
+  };
+
+  if (
+    authLoading ||
+    (user && cart.userId !== user.uid) ||
+    (!user && cart.userId !== null)
+  ) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center text-sm text-gray-500">
+        Loading cart...
+      </div>
+    );
+  }
 
   return (
     <main className="mt-6 mb-6 px-4 md:px-8">
+      <Toaster position="top-center" />
       <div className="container mx-auto">
         <div className="mb-12">
           <h1 className="text-2xl font-bold text-slate-900">Shopping Cart</h1>
@@ -45,24 +85,26 @@ const HomepageNavigate = () => {
             <ul className="mt-8 space-y-4 font-medium text-slate-600">
               <li className="flex flex-wrap gap-4 text-sm">
                 Prices{" "}
-                <span className="ml-auto font-semibold text-slate-900">${Math.floor(totallprice)}</span>
+                <span className="ml-auto font-semibold text-slate-900">
+                  <Price amount={Math.floor(totallprice)} />
+                </span>
               </li>
               <li className="flex flex-wrap gap-4 text-sm">
                 Shipping{" "}
                 <span className="ml-auto font-semibold text-slate-900">
-                  $20
+                  <Price amount={20} />
                 </span>
               </li>
               <li className="flex flex-wrap gap-4 text-sm">
                 Tax{" "}
                 <span className="ml-auto font-semibold text-slate-900">
-                  $10
+                  <Price amount={10} />
                 </span>
               </li>
               <li className="flex flex-wrap gap-4 text-sm text-slate-900">
                 Total{" "}
                 <span className="ml-auto font-semibold">
-                  ${Math.floor(finalBalance)}
+                  <Price amount={Math.floor(finalBalance)} />
                 </span>
               </li>
             </ul>
@@ -70,6 +112,7 @@ const HomepageNavigate = () => {
             <div className="mt-8 space-y-3 text-center">
               <button
                 type="button"
+                onClick={handleCheckout}
                 className="w-full cursor-pointer rounded-md border border-blue-600 bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               >
                 Checkout

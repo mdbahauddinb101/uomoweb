@@ -7,25 +7,35 @@ import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../firebase.config";
+import Price from "../common/Price";
+import LocalizedText from "../common/LocalizedText";
+import LocalizedInput from "../common/LocalizedInput";
 
 const Header = () => {
   const [activeMenu, setActiveMenu] = useState(false);
   const [user, setUser] = useState(null);
+  const [authResolved, setAuthResolved] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const searchInputRef = useRef(null);
 
-  const cart = useSelector((state) => state.cart.products);
+  const { products: cart, userId: cartUserId } = useSelector((state) => state.cart);
   const wishlist = useSelector((state) => state.wishlist.products);
-  const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+  const cartBelongsToCurrentUser =
+    authResolved &&
+    (user ? cartUserId === user.uid : cartUserId === null);
+  const totalItems = cartBelongsToCurrentUser
+    ? cart.reduce((sum, item) => sum + (item.quantity || 1), 0)
+    : 0;
   const navigate = useNavigate();
 
   // Listen to login / logout
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+      setAuthResolved(true);
     });
     return () => unsubscribe();
   }, []);
@@ -88,7 +98,9 @@ const Header = () => {
                   className="text-primary after:bg-primary relative text-sm leading-6 font-medium after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:duration-500 after:content-[''] hover:after:w-[26.05px]"
                   key={item.id}
                 >
-                  <Link to={item.path}>{item.title}</Link>
+                  <Link to={item.path}>
+                    <LocalizedText text={item.title} />
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -103,7 +115,7 @@ const Header = () => {
                       <path d="m14 14 5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
                     </svg>
                   </span>
-                  <input
+                  <LocalizedInput
                     ref={searchInputRef}
                     type="search"
                     value={searchQuery}
@@ -162,10 +174,16 @@ const Header = () => {
                                   className="size-12 shrink-0 bg-[#f2f2f2] object-contain"
                                 />
                                 <span className="min-w-0 flex-1">
-                                  <span className="block truncate text-xs text-[#222]">{product.title}</span>
-                                  <span className="mt-1 block text-[10px] capitalize text-[#767676]">{product.category}</span>
+                                  <span className="block truncate text-xs text-[#222]">
+                                    <LocalizedText text={product.title} />
+                                  </span>
+                                  <span className="mt-1 block text-[10px] capitalize text-[#767676]">
+                                    <LocalizedText text={product.category} />
+                                  </span>
                                 </span>
-                                <span className="shrink-0 text-xs font-medium text-[#222]">${product.price}</span>
+                                <span className="shrink-0 text-xs font-medium text-[#222]">
+                                  <Price amount={product.price} />
+                                </span>
                               </Link>
                             </li>
                           ))}
@@ -246,7 +264,7 @@ const Header = () => {
                 to="/wishlist"
                 aria-label={`Wishlist${wishlist.length ? `, ${wishlist.length} items` : ""}`}
                 title="Wishlist"
-                className="hidden lg:block"
+                className="absolute top-4 right-14 lg:static lg:block"
               >
                 <svg
                   width="21"
@@ -321,7 +339,7 @@ const Header = () => {
                       key={item.id}
                     >
                       <Link to={item.path} onClick={() => setActiveMenu(false)}>
-                        {item.title}
+                        <LocalizedText text={item.title} />
                       </Link>
                     </li>
                   ))}

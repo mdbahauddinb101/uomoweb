@@ -1,6 +1,8 @@
 
 import {useDispatch} from "react-redux";
 import {decrementQuantity, incrementQuantity, removeproduct }   from "../../slices/cartSlice";
+import Price from "../common/Price";
+import LocalizedText from "../common/LocalizedText";
 
 
 export default function CartItem({ item }) {
@@ -50,7 +52,7 @@ const handleMinus = () => {
 
             <div>
                <h3 className="text-base font-semibold text-slate-900">
-                  {item.title}
+                  <LocalizedText text={item.title} />
                </h3>
                <button
                onClick={() => dispatch(removeproduct(item))}
@@ -90,7 +92,7 @@ const handleMinus = () => {
 
          <div className="sm:ml-auto">
             <h3 className="text-base font-semibold text-slate-900">
-               ${(item.price * item.quantity).toFixed(2)}
+               <Price amount={item.price * item.quantity} />
             </h3>
          </div>
       </li>

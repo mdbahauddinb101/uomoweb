@@ -1,22 +1,74 @@
+import { useState } from "react";
+import { Link } from "react-router";
 import Image from "../common/Image";
+import { useLocalization } from "../../localization/LocalizationContext";
+import LocalizedInput from "../common/LocalizedInput";
+
+const languageOptions = [
+  { value: "en-GB", label: "United Kingdom | English" },
+  { value: "en-US", label: "United States | English" },
+  { value: "bn", label: "বাংলাদেশ | বাংলা" },
+  { value: "es", label: "España | Español" },
+  { value: "fr", label: "France | Français" },
+];
+
+const currencyOptions = [
+  { value: "USD", label: "$ USD" },
+  { value: "GBP", label: "£ GBP" },
+  { value: "EUR", label: "€ EUR" },
+  { value: "BDT", label: "৳ BDT" },
+];
 
 const Footer = () => {
+  const [newsletterEmail, setNewsletterEmail] = useState("");
+  const {
+    language,
+    currency,
+    rateLoading,
+    rateError,
+    translationError,
+    setLanguage,
+    setCurrency,
+  } = useLocalization();
+  const localizationError = [translationError, rateError]
+    .filter(Boolean)
+    .join(" ");
+
+  const handleNewsletterSubmit = (event) => {
+    event.preventDefault();
+    const subject = encodeURIComponent("Newsletter subscription");
+    const body = encodeURIComponent(`Please add ${newsletterEmail} to the Uomo newsletter.`);
+    window.location.href = `mailto:sale@uomo.com?subject=${subject}&body=${body}`;
+  };
+
   return (
     <footer className="bg-[#E4E4E4] p-3.75 lg:p-0 mb-15 lg:mb-0">
       <div className="container">
         <div className="flex flex-wrap lg:flex-nowrap lg:justify-center gap-10 lg:gap-30 pt-12.25 lg:pt-25 pb-12.25 lg:pb-22">
           <ul className="flex flex-col gap-10 lg:gap-11">
             <li>
-              <Image src="/public/logo.png" alt="Logo" />
+              <Link to="/" aria-label="Uomo home">
+                <Image src="/public/logo.png" alt="Logo" />
+              </Link>
             </li>
             <li className="mb-17.5 lg:mb-0">
-              1418 River Drive, Suite 35 Cottonhall, CA 9622 United States
+              <a
+                href="https://www.google.com/maps/search/?api=1&query=1418+River+Drive%2C+Suite+35%2C+Cottonhall%2C+CA+9622"
+                target="_blank"
+                rel="noreferrer"
+              >
+                1418 River Drive, Suite 35 Cottonhall, CA 9622 United States
+              </a>
             </li>
-            <li className="hidden lg:block">sale@uomo.com</li>
-            <li className="hidden lg:block">+1 246-345-0695</li>
+            <li className="hidden lg:block">
+              <a href="mailto:sale@uomo.com">sale@uomo.com</a>
+            </li>
+            <li className="hidden lg:block">
+              <a href="tel:+12463450695">+1 246-345-0695</a>
+            </li>
             <li>
               <div className="flex gap-5 lg:gap-9">
-                <button>
+                <a href="https://www.facebook.com/" target="_blank" rel="noreferrer" aria-label="Facebook">
                   <svg
                     width="8"
                     height="14"
@@ -29,8 +81,8 @@ const Footer = () => {
                       fill="#222222"
                     />
                   </svg>
-                </button>
-                <button>
+                </a>
+                <a href="https://x.com/" target="_blank" rel="noreferrer" aria-label="X">
                   <svg
                     width="14"
                     height="12"
@@ -43,8 +95,8 @@ const Footer = () => {
                       fill="#767676"
                     />
                   </svg>
-                </button>
-                <button>
+                </a>
+                <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" aria-label="Instagram">
                   <svg
                     width="13"
                     height="13"
@@ -57,8 +109,8 @@ const Footer = () => {
                       fill="#222222"
                     />
                   </svg>
-                </button>
-                <button>
+                </a>
+                <a href="https://www.youtube.com/" target="_blank" rel="noreferrer" aria-label="YouTube">
                   <svg
                     width="15"
                     height="11"
@@ -71,8 +123,8 @@ const Footer = () => {
                       fill="#222222"
                     />
                   </svg>
-                </button>
-                <button>
+                </a>
+                <a href="https://www.pinterest.com/" target="_blank" rel="noreferrer" aria-label="Pinterest">
                   <svg
                     width="14"
                     height="14"
@@ -85,7 +137,7 @@ const Footer = () => {
                       fill="#222222"
                     />
                   </svg>
-                </button>
+                </a>
               </div>
             </li>
           </ul>
@@ -95,19 +147,19 @@ const Footer = () => {
               COMPANY
             </li>
             <li className="font-jost text-[14px] leading-10 font-normal">
-              About Us
+              <a href="mailto:sale@uomo.com?subject=About%20Uomo">About Us</a>
             </li>
             <li className="font-jost text-[14px] leading-10 font-normal">
-              Careers
+              <a href="mailto:sale@uomo.com?subject=Careers">Careers</a>
             </li>
             <li className="font-jost text-[14px] leading-10 font-normal">
-              Affiliates
+              <a href="mailto:sale@uomo.com?subject=Affiliate%20inquiries">Affiliates</a>
             </li>
             <li className="font-jost text-[14px] leading-10 font-normal">
-              Blog
+              <Link to="/journal">Blog</Link>
             </li>
             <li className="font-jost text-[14px] leading-10 font-normal">
-              Contact Us
+              <a href="mailto:sale@uomo.com?subject=Contact%20Uomo">Contact Us</a>
             </li>
           </ul>
 
@@ -116,19 +168,19 @@ const Footer = () => {
               SHOP
             </li>
             <li className="font-jost text-[14px] leading-10 font-normal">
-              New Arrivals
+              <Link to="/shop">New Arrivals</Link>
             </li>
             <li className="font-jost text-[14px] leading-10 font-normal">
-              Accessories
+              <Link to="/shop">Accessories</Link>
             </li>
             <li className="font-jost text-[14px] leading-10 font-normal">
-              Men
+              <Link to="/shop">Men</Link>
             </li>
             <li className="font-jost text-[14px] leading-10 font-normal">
-              Women
+              <Link to="/shop">Women</Link>
             </li>
             <li className="font-jost text-[14px] leading-10 font-normal">
-              Shop All
+              <Link to="/shop">Shop All</Link>
             </li>
           </ul>
 
@@ -137,22 +189,28 @@ const Footer = () => {
               HELP
             </li>
             <li className="font-jost text-[14px] leading-10 font-normal">
-              Customer Service
+              <a href="mailto:sale@uomo.com?subject=Customer%20Service">Customer Service</a>
             </li>
             <li className="font-jost text-[14px] leading-10 font-normal">
-              My Account
+              <Link to="/profile">My Account</Link>
             </li>
             <li className="font-jost text-[14px] leading-10 font-normal">
-              Find a Store
+              <a
+                href="https://www.google.com/maps/search/?api=1&query=Uomo+store"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Find a Store
+              </a>
             </li>
             <li className="font-jost text-[14px] leading-10 font-normal">
-              Legal & Privacy
+              <a href="mailto:sale@uomo.com?subject=Legal%20and%20privacy">Legal &amp; Privacy</a>
             </li>
             <li className="font-jost text-[14px] leading-10 font-normal">
-              Contact
+              <a href="mailto:sale@uomo.com?subject=Contact%20Uomo">Contact</a>
             </li>
             <li className="font-jost text-[14px] leading-10 font-normal">
-              Gift Card
+              <Link to="/shop">Gift Card</Link>
             </li>
           </ul>
 
@@ -168,17 +226,23 @@ const Footer = () => {
 
 
 
-<div className="relative w-full max-w-md">
-  <input 
-    type="email" 
-    placeholder="Enter your email" 
-    className="w-full  bg-white py-3 pl-4 pr-28 text-sm outline-none focus:border-primary"
-  />
-
-  <button className="absolute right-1 top-1/2 -translate-y-1/2  px-5 py-2 text-[18px] font-medium text-black cursor-pointer">
-    Join
-  </button>
-</div>
+              <form onSubmit={handleNewsletterSubmit} className="relative w-full max-w-md">
+                <LocalizedInput
+                  type="email"
+                  value={newsletterEmail}
+                  onChange={(event) => setNewsletterEmail(event.target.value)}
+                  placeholder="Enter your email"
+                  aria-label="Email for newsletter subscription"
+                  required
+                  className="w-full bg-white py-3 pl-4 pr-28 text-sm outline-none focus:border-primary"
+                />
+                <button
+                  type="submit"
+                  className="absolute top-1/2 right-1 -translate-y-1/2 cursor-pointer px-5 py-2 text-[18px] font-medium text-black"
+                >
+                  Join
+                </button>
+              </form>
 
 
             </li>
@@ -199,38 +263,42 @@ const Footer = () => {
             <ul className="flex flex-wrap gap-5 lg:gap-10">
               <li className="text-gray">Language</li>
               <li className="flex gap-2">
-                United Kingdom | English
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 14 14"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+                <select
+                  aria-label="Language"
+                  value={language}
+                  onChange={(event) => setLanguage(event.target.value)}
+                  className="cursor-pointer appearance-none bg-transparent text-primary underline-offset-2 focus-visible:underline"
                 >
-                  <path
-                    d="M7.49932 3.36078C7.22726 3.08872 6.77274 3.08872 6.49999 3.36078L0.206656 9.638C-0.0688853 9.91355 -0.0688853 10.3604 0.206656 10.6352C0.482197 10.9108 0.929749 10.9108 1.20529 10.6352L6.99997 4.85667L12.794 10.6359C13.0702 10.9115 13.517 10.9115 13.7933 10.6359C14.0688 10.3604 14.0688 9.91355 13.7933 9.6387L7.49932 3.36078Z"
-                    fill="black"
-                  />
-                </svg>
+                  {languageOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
               </li>
               <li className="text-gray">
                 Currency
               </li>
-              <li className="flex gap-2">$ USD
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 14 14"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+              <li className="flex gap-2">
+                <select
+                  aria-label="Currency"
+                  value={currency}
+                  onChange={(event) => setCurrency(event.target.value)}
+                  className="cursor-pointer appearance-none bg-transparent text-primary underline-offset-2 focus-visible:underline"
                 >
-                  <path
-                    d="M7.49932 3.36078C7.22726 3.08872 6.77274 3.08872 6.49999 3.36078L0.206656 9.638C-0.0688853 9.91355 -0.0688853 10.3604 0.206656 10.6352C0.482197 10.9108 0.929749 10.9108 1.20529 10.6352L6.99997 4.85667L12.794 10.6359C13.0702 10.9115 13.517 10.9115 13.7933 10.6359C14.0688 10.3604 14.0688 9.91355 13.7933 9.6387L7.49932 3.36078Z"
-                    fill="black"
-                  />
-                </svg>
+                  {currencyOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
               </li>
             </ul>
+            {(localizationError || rateLoading) && (
+              <p className="mt-3 max-w-xl text-xs text-red-700" role="status">
+                {localizationError || "Loading live exchange rate..."}
+              </p>
+            )}
           </div>
         </div>
       </div>
