@@ -20,15 +20,16 @@ export const cartSlice = createSlice({
 
   reducers: {
     addtocart: (state, action) => {
+      const quantity = Math.max(1, Number(action.payload.quantity) || 1);
       let findproduct = state.products.find(
         (item) => item.id === action.payload.id,
       );
 
       if (findproduct) {
-        (findproduct.quantity++,
+        (findproduct.quantity += quantity,
           localStorage.setItem("cart", JSON.stringify(state.products)));
       } else {
-        state.products.push({ ...action.payload, quantity: 1 });
+        state.products.push({ ...action.payload, quantity });
         localStorage.setItem("cart", JSON.stringify(state.products));
       }
     },
@@ -49,7 +50,7 @@ export const cartSlice = createSlice({
     (item) => item.id === action.payload.id
   );
 
- 
+  if (!findproduct) return;
 
   if (findproduct.quantity <= 1) {
     // remove the item

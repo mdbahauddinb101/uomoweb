@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addproduct, filterproduct  } from "../../slices/productSlice";
+import { SlidersHorizontal } from "lucide-react";
 
 /* ---------- Data (swap with props / API data) ---------- */
 
@@ -71,7 +72,7 @@ const SearchIcon = () => (
 
 /* ---------- Collapsible section ---------- */
 
-function FilterSection({ title, defaultOpen = true, children }) {
+function FilterSection({ title, defaultOpen = true, centered = false, children }) {
   const [open, setOpen] = useState(defaultOpen);
 
   return (
@@ -80,12 +81,12 @@ function FilterSection({ title, defaultOpen = true, children }) {
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className="flex w-full cursor-pointer items-center justify-between text-left"
+        className={`relative flex w-full cursor-pointer items-center ${centered ? "justify-center text-center lg:justify-between lg:text-left" : "justify-between text-left"}`}
       >
         <h3 className="text-base font-medium uppercase text-primary">
           {title}
         </h3>
-        <span className="text-primary">
+        <span className={`text-primary ${centered ? "absolute right-0 lg:static" : ""}`}>
           <ChevronIcon open={open} />
         </span>
       </button>
@@ -166,6 +167,7 @@ export default function ProductSidebar({ onChange }) {
   const [brands, setBrands] = useState([]);
   const [price, setPrice] = useState([29, 937]);
   const [filterProducts, setFilterProducts] = useState([]);
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const toggle = (list, setList, item) =>
     setList(list.includes(item) ? list.filter((i) => i !== item) : [...list, item]);
@@ -191,16 +193,31 @@ export default function ProductSidebar({ onChange }) {
   // useEffect(() => onChange?.({ category, color, sizes, brands, price }), [...]);
 
   return (
-    <aside className="w-full min-h-300 max-w-56 font-jost text-primary mb-40">
+    <aside className="w-full shrink-0 font-jost text-primary lg:mb-40 lg:max-w-56">
+      <button
+        type="button"
+        onClick={() => setFiltersOpen((open) => !open)}
+        aria-expanded={filtersOpen}
+        className="mx-auto mb-5 flex w-fit items-center justify-center gap-2 border border-gray/30 px-4 py-2.5 text-xs font-medium uppercase tracking-wide transition-colors hover:border-primary lg:hidden"
+      >
+        <SlidersHorizontal size={16} aria-hidden="true" />
+        <span>Filters</span>
+        <span className="ml-1">
+          <ChevronIcon open={filtersOpen} />
+        </span>
+      </button>
+      <div
+        className={`${filtersOpen ? "block" : "hidden"} lg:block`}
+      >
       <div className="flex flex-col gap-9">
         {/* Categories */}
-        <FilterSection title="Product Categories">
-          <ul className="flex flex-col gap-2.5">
-            <li>
+        <FilterSection title="Product Categories" centered>
+          <ul className="grid grid-cols-2 justify-items-center gap-2 sm:grid-cols-3 lg:flex lg:flex-col lg:items-start lg:gap-2.5">
+            <li className="text-center lg:text-left">
               <button
                 type="button"
                 onClick={() => handleActiveCategory("All")}
-                className={`cursor-pointer text-sm transition-colors hover:text-gray capitalize ${
+                className={`w-full cursor-pointer text-center text-xs capitalize transition-colors hover:text-gray sm:text-sm lg:w-auto lg:text-left ${
                   category === "All" ? "font-medium text-primary" : "text-primary"
                 }`}
               >
@@ -208,11 +225,11 @@ export default function ProductSidebar({ onChange }) {
               </button>
             </li>
             {CATEGORIES.map((name) => (
-              <li key={name}>
+              <li key={name} className="text-center lg:text-left">
                 <button
                   type="button"
                   onClick={() => handleActiveCategory(name)}
-                  className={`cursor-pointer text-sm transition-colors hover:text-gray capitalize ${
+                  className={`w-full cursor-pointer text-center text-xs capitalize transition-colors hover:text-gray sm:text-sm lg:w-auto lg:text-left ${
                     category === name ? "font-medium text-primary" : "text-primary"
                   }`}
                 >
@@ -308,6 +325,7 @@ export default function ProductSidebar({ onChange }) {
         <FilterSection title="Price">
           <PriceRange value={price} onChange={setPrice} />
         </FilterSection>
+      </div>
       </div>
     </aside>
   );

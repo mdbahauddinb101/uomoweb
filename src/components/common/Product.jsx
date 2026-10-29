@@ -1,6 +1,7 @@
 import { addtocart } from "../../slices/cartSlice";
 import Image from "./Image"
 import {useDispatch} from "react-redux"
+import { Link } from "react-router";
 
 
 
@@ -39,7 +40,11 @@ const Product = ({item}) => {
 </svg>
             </button>
             </div>
-            <h3 className="text-base text-primary font-normal mb-2.5">{item.title}</h3>
+            <h3 className="text-base text-primary font-normal mb-2.5">
+              <Link to={`/shopsinglepage/${item.id}`} className="hover:text-gray">
+                {item.title}
+              </Link>
+            </h3>
             <h5 className="text-base text-primary font-normal mb-2.5">{item.price}</h5>
         </div>
         <div className="text-center">

@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import Ragister from "./pages/Ragister";
 import ForgotPassword from "./pages/ForgotPassword";
 import Profile from "./pages/Profile";
+import ShopSinglePage from "./pages/ShopSinglePage";
 
 
 
@@ -27,6 +28,7 @@ const router = createBrowserRouter([
             { path: "/ragister", Component: Ragister },
              { path: "/passforgot", Component: ForgotPassword },
               { path: "/profile", Component: Profile },
+                { path: "/shopsinglepage/:id", Component: ShopSinglePage },
             
        
     
